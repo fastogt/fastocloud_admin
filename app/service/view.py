@@ -150,6 +150,7 @@ class ServiceView(FlaskView):
             if server and user:
                 admin = UserPair(user.id, form.role.data)
                 server.add_user(admin)
+                user.add_server(server)
                 return jsonify(status='ok'), 200
 
         return render_template('service/user/add.html', form=form)
