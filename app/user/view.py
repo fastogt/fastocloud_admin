@@ -3,6 +3,7 @@ from flask import render_template, redirect, url_for, request
 from flask_login import login_required, current_user
 
 from app.home.forms import SettingsForm
+from app.service.service_entry import ServiceSettings
 
 
 # routes
@@ -50,5 +51,9 @@ class UserView(FlaskView):
 
     @login_required
     def remove(self):
+        servers = ServiceSettings.objects()
+        for server in servers:
+            server.remove_user(current_user.id)
+
         current_user.delete()
         return redirect(url_for('HomeView:index'))

@@ -42,3 +42,9 @@ class ServiceSettings(Document, ServerSettings):
     def add_user(self, user: UserPair):
         self.users.append(user)
         self.save()
+
+    def remove_user(self, uid):
+        for user in self.users:
+            if user.id == uid:
+                self.users.remove(user)
+        self.save()
