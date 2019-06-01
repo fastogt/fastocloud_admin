@@ -17,4 +17,4 @@ if __name__ == '__main__':
     parser.add_argument('--host', help='host (default: {0})'.format(HOST), default=HOST)
     argv = parser.parse_args()
 
-    app.run(host=argv.host, port=argv.port, debug=True, use_reloader=False)  # debug=True, use_reloader=False
+    app.run(host=argv.host, port=argv.port, debug=True, use_reloader=True)  # debug=True, use_reloader=False
