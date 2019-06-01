@@ -38,3 +38,7 @@ class ServiceSettings(Document, ServerSettings):
                         out.uri)
 
         return result
+
+    def add_user(self, user: UserPair):
+        self.users.append(user)
+        self.save()

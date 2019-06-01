@@ -60,8 +60,12 @@ Settings | {{ config['PUBLIC_CONFIG'].site.title }}
                     <td>{{ loop.index }}</td>
                     <td>{{ server.name }}</td>
                     <td>
-                        <button type="submit" class="btn btn-danger btn-xs" onclick="edit_server('{{ server.id }}')">
+                        <button type="submit" class="btn btn-success btn-xs" onclick="edit_server('{{ server.id }}')">
                             {% trans %}Edit{% endtrans %}
+                        </button>
+                        <button type="submit" class="btn btn-success btn-xs"
+                                onclick="add_user_to_server('{{ server.id }}')">
+                            {% trans %}Add user{% endtrans %}
                         </button>
                         <button type="submit" class="btn btn-danger btn-xs" onclick="remove_server('{{ server.id }}')">
                             {% trans %}Remove{% endtrans %}
@@ -79,21 +83,6 @@ Settings | {{ config['PUBLIC_CONFIG'].site.title }}
                 {% trans %}Add server{% endtrans %}
             </button>
         </div>
-    </div>
-    </br>
-    <div class="row well">
-        <h3>Find and add server by ID:</h3>
-        <form class="form-group row" action="{{ url_for('ServiceView:find_and_add') }}" method="post">
-            <div class="col-md-10">
-                <div class="form-group">
-                    <input class="form-control" name="sid" minlength="24" maxlength="24"
-                           placeholder="ID (24-character hex string)">
-                </div>
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-success">Find and Add</button>
-            </div>
-        </form>
     </div>
 </div>
 <div id="service_dialog" class="modal fade" tabindex=-1 role="dialog">
@@ -125,6 +114,38 @@ Settings | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
+
+    function add_user_to_server_entry(url) {
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: 'json',
+            data: $('#user_entry_form').serialize(),
+            success: function (response) {
+                console.log(response);
+                $('#service_dialog').modal('hide');
+                window.location.reload();
+            },
+            error: function (error) {
+                console.error(error);
+                $('#service_dialog .modal-content').html(data);
+            }
+        });
+    }
+
+    function add_user_to_server(sid) {
+        var url = "/service/user/add/" + sid;
+        $.get(url, function(data) {
+            $('#service_dialog .modal-content').html(data);
+            $('#service_dialog').modal();
+
+            $('#apply').click(function(event) {
+                event.preventDefault();
+                add_user_to_server_entry(url);
+            })
+        });
+    }
+
 
     function add_server() {
         var url = "{{ url_for('ServiceView:add') }}";
@@ -185,7 +206,5 @@ Settings | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
-
-
 </script>
 {% endblock %}

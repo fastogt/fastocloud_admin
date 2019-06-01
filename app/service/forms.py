@@ -1,11 +1,11 @@
 from flask_wtf import FlaskForm
 from flask_babel import lazy_gettext
 from wtforms.fields import StringField, SubmitField, FileField, SelectField, FormField
-from wtforms.validators import InputRequired, Length
+from wtforms.validators import InputRequired, Length, Email
 
 from app.common_forms import HostAndPortForm
 from app.service.service_entry import ServiceSettings
-from app.constants import StreamType
+import app.constants as constants
 
 
 class ServiceSettingsForm(FlaskForm):
@@ -51,11 +51,24 @@ class ActivateForm(FlaskForm):
 
 
 class UploadM3uForm(FlaskForm):
-    AVAILABLE_STREAM_TYPES_FOR_UPLOAD = [(StreamType.RELAY, 'Relay'), (StreamType.ENCODE, 'Encode'),
-                                         (StreamType.CATCHUP, 'Catchup'), (StreamType.TEST_LIFE, 'Test life'),
-                                         (StreamType.VOD_RELAY, 'Vod relay'), (StreamType.VOD_ENCODE, 'Vod encode')]
+    AVAILABLE_STREAM_TYPES_FOR_UPLOAD = [(constants.StreamType.RELAY, 'Relay'), (constants.StreamType.ENCODE, 'Encode'),
+                                         (constants.StreamType.CATCHUP, 'Catchup'),
+                                         (constants.StreamType.TEST_LIFE, 'Test life'),
+                                         (constants.StreamType.VOD_RELAY, 'Vod relay'),
+                                         (constants.StreamType.VOD_ENCODE, 'Vod encode')]
 
     file = FileField()
-    type = SelectField(lazy_gettext(u'Type:'), coerce=StreamType.coerce, validators=[InputRequired()],
+    type = SelectField(lazy_gettext(u'Type:'), coerce=constants.StreamType.coerce, validators=[InputRequired()],
                        choices=AVAILABLE_STREAM_TYPES_FOR_UPLOAD)
     submit = SubmitField(lazy_gettext(u'Upload'))
+
+
+class UserAddForm(FlaskForm):
+    AVAILABLE_ROLES = [(constants.Roles.READ, 'Read'), (constants.Roles.WRITE, 'Write'),
+                       (constants.Roles.ADMIN, 'Admin'), (constants.Roles.SUPPORT, 'Support')]
+
+    email = StringField(lazy_gettext(u'Email:'),
+                        validators=[InputRequired(), Email(message=lazy_gettext(u'Invalid email')), Length(max=30)])
+    role = SelectField(lazy_gettext(u'Role:'), coerce=constants.Roles.coerce, validators=[InputRequired()],
+                       choices=AVAILABLE_ROLES)
+    apply = SubmitField(lazy_gettext(u'Apply'))

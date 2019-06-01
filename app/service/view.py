@@ -1,15 +1,14 @@
 import os
 
-from bson.objectid import ObjectId
-
 from flask_classy import FlaskView, route
 from flask import render_template, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 
 from app import get_runtime_folder
-from app.service.forms import ServiceSettingsForm, ActivateForm, UploadM3uForm
+from app.service.forms import ServiceSettingsForm, ActivateForm, UploadM3uForm, UserAddForm
 from app.service.service_entry import ServiceSettings, UserPair
 from app.utils.m3u_parser import M3uParser
+from app.home.user_loging_manager import User
 import app.constants as constants
 
 
@@ -142,18 +141,32 @@ class ServiceView(FlaskView):
     # broadcast routes
 
     @login_required
+    @route('/user/add/<sid>', methods=['GET', 'POST'])
+    def user_add(self, sid):
+        form = UserAddForm()
+        if request.method == 'POST' and form.validate_on_submit():
+            user = User.objects(email=form.email.data).first()
+            server = ServiceSettings.objects(id=sid).first()
+            if server and user:
+                admin = UserPair(user.id, form.role.data)
+                server.add_user(admin)
+                return jsonify(status='ok'), 200
+
+        return render_template('service/user/add.html', form=form)
+
+    @login_required
     @route('/add', methods=['GET', 'POST'])
     def add(self):
         model = ServiceSettings()
         form = ServiceSettingsForm(obj=model)
         if request.method == 'POST' and form.validate_on_submit():
             new_entry = form.make_entry()
-            new_entry.users.append(UserPair(current_user.id, constants.Roles.ADMIN))
-            new_entry.save()
+            admin = UserPair(current_user.id, constants.Roles.ADMIN)
+            new_entry.add_user(admin)
             current_user.add_server(new_entry)
             return jsonify(status='ok'), 200
 
-        return render_template('service/add.html', form=form)
+        return render_template('service/user/add.html', form=form)
 
     @login_required
     @route('/remove', methods=['POST'])
@@ -178,24 +191,6 @@ class ServiceView(FlaskView):
             return jsonify(status='ok'), 200
 
         return render_template('service/edit.html', form=form)
-
-    @login_required
-    @route('/find_and_add', methods=['POST'])
-    def find_and_add(self):
-        sid = request.form['sid']
-        if ObjectId.is_valid(sid):
-            server = ServiceSettings.objects(id=sid).first()
-            if server:
-                for user in server.users:
-                    if user.id == current_user.id:
-                        return jsonify(status='failed'), 404
-
-                server.users.append(current_user.id)
-                server.save()
-                current_user.add_server(server)
-                return jsonify(status='ok'), 200
-
-        return jsonify(status='failed'), 404
 
     @route('/log/<sid>', methods=['POST'])
     def log(self, sid):
