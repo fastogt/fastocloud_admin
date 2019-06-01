@@ -1,0 +1,46 @@
+{% extends 'layouts/layout_home.html' %}
+{% block title %}
+Login | {{ config['PUBLIC_CONFIG'].site.title }}
+{% endblock %}
+
+{% block content %}
+<div class="container center-block">
+    <div class="panel panel-default text-center">
+        <div class="panel-heading">
+            <h1 class="panel-title">
+                <a href="{{ url_for('HomeView:index') }}">
+                    {{ config['PUBLIC_CONFIG'].site.title }}
+                </a>
+            </h1>
+        </div>
+        <div class="panel-body">
+            <h3>{% trans %}Sign In{% endtrans %}</h3>
+            <p>{% trans %}Note: Your data isn't going anywhere.{% endtrans %}</p>
+            {{ util.flashed_messages(dismissible=True, container=False) }}
+            <form action="" method="post" class="form" role="form">
+                {{ form.hidden_tag() }}
+                <div class="form-group  required text-left">
+                    <label class="control-label" for="email">{{ form.email.label }}</label>
+                    <input class="form-control" id="email" name="email"
+                           placeholder="{% trans %}Your registered email.{% endtrans %}" required type="text" value="">
+                </div>
+                <br>
+                <div class="form-group  required text-left">
+                    <label class="control-label" for="password">{{ form.password.label }}</label>
+                    <input class="form-control" id="password" name="password"
+                           placeholder="{% trans %}Enter a password.{% endtrans %}" required type="password" value="">
+                </div>
+                {{ form_field(form.submit, class="btn") }}
+            </form>
+        </div>
+        <div class="panel-footer text-left">{% trans %}Don`t have an account?{% endtrans %}
+            <a class="pull-right" href={{ url_for('HomeView:signup') }}><b>{% trans %}Sign up{% endtrans %}</b></a>
+        </div>
+    </div>
+    <div class="text-center">
+        <a class="back-to-site" href="{{ url_for('HomeView:index') }}">
+            &#8592;&nbsp;{% trans %}Home{% endtrans %} {{ config['PUBLIC_CONFIG'].site.title }}
+        </a>
+    </div>
+</div>
+{%- endblock %}

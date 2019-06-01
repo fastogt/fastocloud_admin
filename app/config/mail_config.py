@@ -1,0 +1,7 @@
+MAIL_SERVER = 'smtp.office365.com'
+MAIL_USERNAME = 'test@example.com'
+MAIL_DEFAULT_SENDER = MAIL_USERNAME
+MAIL_PASSWORD = 'test'
+MAIL_PORT = 587
+MAIL_USE_SSL = False
+MAIL_USE_TLS = True

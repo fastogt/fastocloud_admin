@@ -1,0 +1,97 @@
+{% extends 'layouts/layout.html' %}
+{% block title %}
+Terms of Service | {{ title }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row well">
+
+        <h3>TERMS OF SERVICE</h3>
+        <p>Welcome to <a href={{ url_for('HomeView:index')}}>{{ title }}</a>, a website that user's save money. With our
+            service you can quickly monitor, manage and visualize your data in order to grow your business. <a
+                    href="mailto:{{ contact_email }}">Contact us</a> and we will respond promptly.</p>
+        <h3>Acceptance</h3>
+        <p>By using this Service you are deemed to accept the validity of and be bound by the Terms of Service as
+            stated herein without modification.</p>
+        <h3>Limited Warranties</h3>
+        <p>Except as specified in these Terms, to the maximum extent permitted under applicable law, the Service
+            provided by {{ title }} is provided “as is” without any kind of warranty. Except as specified in these
+            Terms, we are not responsible for any loss, injury, claim, liability, damage, or consequential damage
+            related to your use of the Service, or inaccessibility of the Service whether from errors or omissions
+            in the content of this Service or any other linked sites or for any other reason. Use of this Service is
+            at your own risk.{{ title }} does not represent or warrant that the Site, its server or any linked sites
+            are free of any harmful materials.</p>
+        <h3>Accounts, Passwords and Security</h3>
+        <p>If any portion of the Site or Services require you to open an account, you must complete the registration
+            process by providing {{ title }} with current, complete and accurate information, as prompted by
+            the applicable registration form if you wish to have access to such features. You further agree to keep
+            any registration information you provide to {{ title }} current, complete and accurate. As part of
+            the registration process, you may be asked to select a username and password. You are entirely
+            responsible for maintaining the security and confidentiality of your account information and password.
+            FURTHERMORE, YOU ARE ENTIRELY RESPONSIBLE FOR ANY AND ALL ACTIVITIES AND CONDUCT, WHETHER BY YOU OR
+            ANYONE ELSE, THAT ARE CONDUCTED THROUGH YOUR ACCOUNT. You agree to notify {{ title }} immediately of any
+            unauthorized use of your account or any other breach of security. {{ title }} will not be liable for any
+            loss that you may incur as a result of someone else using your password or account, either with or
+            without your knowledge. However, you may be held liable for any losses incurred by {{ title }} or
+            another party due to someone else using your account or password.</p>
+        <h3>Prohibited Activities</h3>
+        <p>In connection with your use of the Sites and/or the Services, you acknowledge and agree that you will
+            not:</p>
+        <ul>
+            <li>copy, modify, publish, transmit, distribute, transfer or sell, create derivative works of, or in any
+                way exploit any of the information, software, text, images, graphics, video files, audio files,
+                ideas or other materials (collectively the “Content”) of this Site not submitted or provided by you,
+                including by use of any robot, spider, scraper, deep link or other similar automated data gathering
+                or extraction tools, program, algorithm or methodology, unless you obtain our prior written consent;
+            </li>
+            <li>use any engine, software, tool, agent or other device or mechanism to navigate or search the Site,
+                other than the search engines and agents available through the Service and other than generally
+                available third party web browsers;
+            </li>
+            <li> copy, reverse engineer, reverse assemble, otherwise attempt to discover the source code,
+                distribute, transmit, display, perform, reproduce, publish, license, transfer, or sell any
+                information, software, products or services obtained through the Site or the Services;
+            </li>
+            <li> transmit any message, information, data, text, software, image, or other content that is unlawful,
+                harmful, threatening, abusive, harassing, tortious, defamatory, vulgar, obscene, libelous, or
+                otherwise objectionable which may invade another's right of privacy or publicity;
+            </li>
+            <li>post or transmit any material that contains a virus, worm, Trojan horse, corrupted data, or any
+                other contaminating or destructive feature;
+            </li>
+            <li> upload or transmit any material that infringes any patent, trademark, trade secret, copyright, or
+                other proprietary rights of any third party or violates a third party’s right of privacy or
+                publicity;
+            </li>
+            <li>use the Site and/or the Services for any purpose that is unlawful or prohibited by these terms and
+                conditions. You may not use the Site or the Services in any manner that could damage, disable,
+                overburden, or impair {{ title }} servers or networks, or interfere with any other user's use and
+                enjoyment of the Site and/or the Services. Furthermore, you may not attempt to gain unauthorized
+                access to any of the Site, Services, accounts, computer systems or networks connected to {{ title }}
+                through hacking, password mining or any other means. You may not obtain or attempt to obtain any
+                materials or information through any means not intentionally made available through the Site or the
+                Services;
+            </li>
+        </ul>
+        <h3>Copyright</h3>
+        <p>You may not duplicate, copy, or reuse any portion of the HTML/CSS or visual design elements without
+            express written permission from <%- company.name %>.</p>
+        <h3>General Information</h3>
+        <p>This Agreement (including the Privacy Policy) constitutes the entire agreement and understanding between
+            you and {{ title }} and governs your use of the Site and the Services, superseding any prior agreements
+            between you and {{ title }}. This Agreement and the relationship between you and {{ title }} shall be
+            governed by and construed in accordance with the laws of Belarus, without regard to its conflict of law
+            provisions. This Agreement is not assignable, transferable or sub-licensable by you except with our
+            prior written consent. However, we may assign this Agreement to any third party whom we choose without
+            your consent. You acknowledge that we have the right hereunder to seek an injunction, if necessary, to
+            stop or prevent a breach of your obligations hereunder.</p>
+        <h3>Modification to Terms</h3>
+        <p>{{ title }} may modify this Agreement at any time. If such change is material, we will post notice of the
+            change on the Site’s home page or by email to registered users. Your use of the Site following such
+            notice shall be deemed your acceptance of such changes. You agree to review the Agreement periodically
+            to be aware of such modifications.</p>
+        </ul>
+    </div>
+</div>
+{% endblock %}

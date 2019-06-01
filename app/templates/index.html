@@ -1,0 +1,71 @@
+{% extends 'layouts/layout.html' %}
+
+{% block title %}
+{{ config['PUBLIC_CONFIG'].site.title }}
+{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/index.css') }}"/>
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container">
+        <div class="jumbotron text-center">
+            <div class="col-md-6">
+                <a href={{ url_for('HomeView:signin') }} class="btn btn-warning">Sign In</a>
+            </div>
+            <div class="col-md-6">
+                <a href={{ url_for('HomeView:signup') }} class="btn btn-warning">Sign Up</a>
+            </div>
+        </div>
+        <div>
+            <h1>IPTV/Video cloud admin panel for <a href="https://github.com/fastogt/iptv">server</a></h1>
+            <h2>Features:</h2>
+            <ul>
+                <li>GPU/CPU Encode/Decode/Post Processing</li>
+                <li>Relays</li>
+                <li>Timeshifts</li>
+                <li>Catchups</li>
+                <li>Playlists</li>
+                <li>Mozaic</li>
+                <li>Many Outputs</li>
+                <li>Physical Inputs</li>
+                <li>Streaming Protocols</li>
+                <li>File Formats</li>
+                <li>Presets</li>
+                <li>Vods server-side support</li>
+                <li>HTTP Live Streaming (HLS) server-side support</li>
+                <li>
+                    Public API, client server communication via <a href="https://www.jsonrpc.org/specification">JSON
+                    RPC</a>
+                </li>
+                <li><a href="https://hub.docker.com/r/fastogt/iptv">Docker Image</a></li>
+            </ul>
+            <h2>Visit our client site: <a href="https://fastotv.com">fastotv.com</a></h2>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container">
+        <div class="jumbotron text-center">
+            <p class="keep-left">Address: {{config['PUBLIC_CONFIG'].support.contact_address }}</p>
+            <p class="keep-left">Copyright © 2014-2019
+                <a href="{{ config['PUBLIC_CONFIG'].company.domain }}">
+                    {{ config['PUBLIC_CONFIG'].company.title }}
+                </a>. All rights reserved.
+            </p>
+            <p> Website development -
+                <a href="/">
+                    <img src="{{ url_for('static', filename='assets/images/fastogt.png') }}">
+                </a>
+            </p>
+        </div>
+    </div>
+</footer>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
+{% endblock %}

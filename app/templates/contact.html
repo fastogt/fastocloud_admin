@@ -1,0 +1,54 @@
+{% extends 'layouts/layout_home.html' %}
+{% block title %}
+Contact | {{ config['PUBLIC_CONFIG'].site.title }}
+{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/contact.css') }}"/>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="panel panel-default center-block text-center">
+        <div class="panel-heading">
+            <h1 class="panel-title"><a
+                    href="{{ url_for('HomeView:index') }}">{{ config['PUBLIC_CONFIG'].site.title }}</a></h1>
+        </div>
+        <div class="panel-body">
+            {% if success %}
+            <p>Thank you for your message. We'll get back to you shortly.</p>
+            {% else %}
+            <form action="" method="post" class="form" role="form">
+                {{ form.hidden_tag() }}
+                <div class="form-group  required text-left">
+                    <label class="control-label" for="email">{{ form.email.label }}</label>
+                    <input class="form-control" id="email" name="email"
+                           placeholder="{% trans %}Your email will be used to contact you.{% endtrans %}" required
+                           type="text"
+                           value="">
+                </div>
+                <div class="form-group  required text-left">
+                    <label class="control-label" for="subject">{{ form.subject.label }}</label>
+                    <input class="form-control" id="subject" name="subject"
+                           placeholder="{% trans %}Enter a subject.{% endtrans %}" required type="subject"
+                           value="">
+                </div>
+                <div class="form-group  required text-left">
+                    <label class="control-label" for="message">{{ form.message.label }}</label>
+                    <input class="form-control" id="message" name="message"
+                           placeholder="{% trans %}Enter a message.{% endtrans %}" required type="message"
+                           value="">
+                </div>
+                {{ form_field(form.submit, class="btn") }}
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    <div class="text-center">
+        <a class="back-to-site" href="{{ url_for('HomeView:index') }}">
+            &#8592;&nbsp;{% trans %}Home{% endtrans %} {{ config['PUBLIC_CONFIG'].site.title }}
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+{{ config['PUBLIC_CONFIG'].site.title }}
+{% endblock %}
+
+{%- block metas %}
+{{super()}}
+<meta charset="utf-8">
+<meta name="description" content="{{ config['PUBLIC_CONFIG'].site.title }}"/>
+<meta name="keywords" content="{{ config['PUBLIC_CONFIG'].site.keywords }}"/>
+<meta name="copyright" content="{{ config['PUBLIC_CONFIG'].company.domain }}"/>
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+{% endblock %}

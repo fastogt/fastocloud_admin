@@ -1,0 +1,52 @@
+{% extends 'layouts/layout_home.html' %}
+{% block title %}
+Register | {{ config['PUBLIC_CONFIG'].site.title }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="panel panel-default center-block text-center">
+        <div class="panel-heading">
+            <h1 class="panel-title"><a
+                    href="{{ url_for('HomeView:index') }}">{{ config['PUBLIC_CONFIG'].site.title }}</a></h1>
+        </div>
+        <div class="panel-body">
+            <h3>{% trans %}Sign Up{% endtrans %}</h3>
+            <p>{% trans %}Note: Your data isn't going anywhere.{% endtrans %}</p>
+            {{ util.flashed_messages(dismissible=True, container=False) }}
+            <form action="" method="post" class="form" role="form">
+                {{ form.hidden_tag() }}
+                <div class="form-group  required text-left">
+                    <label class="control-label" for="email">{{ form.email.label }}</label>
+                    <input class="form-control" id="email" name="email"
+                           placeholder="{% trans %}Your email will be used to contact you.{% endtrans %}" required
+                           type="text"
+                           value="">
+                </div>
+                <div class="form-group  required text-left">
+                    <label class="control-label" for="password">{{ form.password.label }}</label>
+                    <input class="form-control" id="password" name="password"
+                           placeholder="{% trans %}Enter a password.{% endtrans %}" required type="password"
+                           value="">
+                </div>
+                <p class="tos-info conditions-for-submit">By clicking "{{ form.submit.label }}" below, you agree to our
+                    <a href={{ url_for('HomeView:term_of_use') }} target="_blank">terms of service</a> and
+                    <a href={{ url_for('HomeView:private_policy') }} target="_blank">privacy statement</a>. We’ll
+                    occasionally
+                    send
+                    you account related emails.
+                </p>
+                {{ form_field(form.submit, class="btn") }}
+            </form>
+        </div>
+        <div class="panel-footer text-left">{% trans %}Already registered?{% endtrans %}
+            <a class="pull-right" href={{ url_for('HomeView:signin') }}><b>{% trans %}Sign in{% endtrans %}</b></a>
+        </div>
+    </div>
+    <div class="text-center">
+        <a class="back-to-site" href="{{ url_for('HomeView:index') }}">
+            &#8592;&nbsp;{% trans %}Home{% endtrans %} {{ config['PUBLIC_CONFIG'].site.title }}
+        </a>
+    </div>
+</div>
+{%- endblock %}

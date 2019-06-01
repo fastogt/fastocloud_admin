@@ -1,0 +1,43 @@
+{% extends 'layouts/layout.html' %}
+{% block title %}
+Private Policy | {{ title }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row well">
+        <h3>We Respect and Protect Your Privacy</h3>
+        <ul>
+            <li>We only collect necessary information</li>
+            <li>We will only collect your usage information for analytic purposes</li>
+            <li>We protect your data</li>
+            <li>You have access to your data</li>
+        </ul>
+        <h3>We don’t Share Customer Information</h3>
+        <p>{{ title }} does not share customer information of any kind with anyone or any third party. We
+            will not sell or rent your name or personal information to any third party. We do not sell, rent or
+            provide outside access to our mailing list or any data we store. Any data that a user stores via our
+            facilities is wholly owned by that user or business. At anytime a user or business is free to take
+            their data and leave, or to simply delete their data from our facilities.</p>
+        <h3>WE PROTECT YOUR INFORMATION</h3>
+        <p>We implement a variety of security measures to maintain the safety of your personal information when
+            you place an order. We offer the use of a secure server. After a transaction, your private
+            information (credit cards, financials, etc.) will not be stored on our servers.</p>
+        <h3>We Follow Laws</h3>
+        <p>{{ title }} may release personal information if the partnership is required to by law, search
+            warrant, subpoena, court order or fraud investigation. We may also use personal information in a
+            manner that does not identify you specifically nor allow you to be contacted but does identify
+            certain criteria about our Site’s users in general (such as we may inform third parties about the
+            number of registered users, number of unique visitors, number of FastoRedis instances linked,
+            average number of keys by instance, and the pages most frequently browsed, etc.).</p>
+        <h3>We Talk</h3>
+        <p>If a customer or potential customer of {{ title }} has any specific questions, concerns or
+            complaints about our privacy policies or the methods in which we collect the necessary data to run
+            our business, they are encouraged to contact us and one of our team members will respond promptly
+            and will work with them to find an amicable resolution to the issue.</p>
+        <h3><a href="mailto:{{ contact_email }}">CONTACTING US</a></h3>
+        <p>If there are any questions regarding this privacy policy you may contact us using the information
+            available on the support page.</p>
+    </div>
+</div>
+{% endblock %}

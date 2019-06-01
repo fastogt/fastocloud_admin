@@ -1,0 +1,91 @@
+{% from 'bootstrap/wtf.html' import form_field %}
+{% macro render_bootstrap_field(field) %}
+<div class="row">
+    <label class="col-md-4">{{ field.label }}</label>
+    <div class="col-md-8">
+        {{ field(class='form-control')|safe }}
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_bootstrap_form(form) %}
+<div class="row">
+    <label class="col-md-4">{{ form.label }}</label>
+    <div class="col-md-8">
+        {{ form() }}
+    </div>
+</div>
+{% endmacro %}
+
+<form id="stream_entry_form" name="stream_entry_form" class="form" method="post">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">
+            {% block title %}
+            {% endblock %}
+        </h4>
+    </div>
+    <div class="modal-body">
+        {{ form.hidden_tag() }}
+        <br>
+        {{ render_bootstrap_field(form.name) }}
+        <br>
+        {{ render_bootstrap_field(form.icon) }}
+        <br>
+        {{ render_bootstrap_field(form.group) }}
+        <br>
+        {{ render_bootstrap_field(form.audio_select) }}
+        <br>
+        {{ render_bootstrap_field(form.have_video) }}
+        <br>
+        {{ render_bootstrap_field(form.have_audio) }}
+        <br>
+        {{ render_bootstrap_field(form.avformat) }}
+        <br>
+        {{ render_bootstrap_field(form.restart_attempts) }}
+        <br>
+        {{ render_bootstrap_field(form.deinterlace) }}
+        <br>
+        {{ render_bootstrap_field(form.frame_rate) }}
+        <br>
+        {{ render_bootstrap_field(form.volume) }}
+        <br>
+        {{ render_bootstrap_field(form.video_codec) }}
+        <br>
+        {{ render_bootstrap_field(form.audio_codec) }}
+        <br>
+        {{ render_bootstrap_field(form.audio_channels_count) }}
+        <br>
+        {{ render_bootstrap_form(form.size) }}
+        <br>
+        {{ render_bootstrap_field(form.video_bit_rate) }}
+        <br>
+        {{ render_bootstrap_field(form.audio_bit_rate) }}
+        <br>
+        {{ render_bootstrap_form(form.logo) }}
+        <br>
+        {{ render_bootstrap_form(form.aspect_ratio) }}
+        <br>
+        {{ render_bootstrap_form(form.input) }}
+        <br>
+        {{ render_bootstrap_form(form.output) }}
+        <br>
+        <div class="row">
+            <label class="col-md-4">Logs directory:</label>
+            <div class="col-md-8">
+                <input class="form-control" id="feedback_dir" name="feedback_dir" value="{{ feedback_dir }}" readonly
+                       type="text">
+            </div>
+        </div>
+        <br>
+        {{ render_bootstrap_field(form.log_level) }}
+    </div>
+    <div class="modal-footer">
+        {% block footer %}
+        <button type="button" class="btn btn-danger" data-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
+        {{ form_field(form.submit, class="btn btn-success") }}
+        {% endblock %}
+    </div>
+</form>
