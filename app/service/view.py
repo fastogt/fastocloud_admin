@@ -167,7 +167,7 @@ class ServiceView(FlaskView):
             current_user.add_server(new_entry)
             return jsonify(status='ok'), 200
 
-        return render_template('service/user/add.html', form=form)
+        return render_template('service/add.html', form=form)
 
     @login_required
     @route('/remove', methods=['POST'])
