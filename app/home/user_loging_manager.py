@@ -24,11 +24,16 @@ class User(UserMixin, Document):
         ACTIVE = 1
         BANNED = 2
 
+    class Type(IntEnum):
+        GUEST = 0,
+        USER = 1
+
     meta = {'collection': 'users', 'auto_create_index': False}
     email = StringField(max_length=30, required=True)
     password = StringField(required=True)
     created_date = DateTimeField(default=datetime.now)
     status = IntField(default=Status.NO_ACTIVE)
+    type = IntField(default=Type.USER)
 
     settings = EmbeddedDocumentField(Settings, default=Settings)
     servers = ListField(ReferenceField(ServiceSettings), default=[])

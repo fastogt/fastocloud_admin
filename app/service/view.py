@@ -5,7 +5,7 @@ from flask import render_template, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 
 from app import get_runtime_folder
-from app.service.forms import ServiceSettingsForm, ActivateForm, UploadM3uForm, UserAddForm
+from app.service.forms import ServiceSettingsForm, ActivateForm, UploadM3uForm, UserServerForm
 from app.service.service_entry import ServiceSettings, UserPair
 from app.utils.m3u_parser import M3uParser
 from app.home.user_loging_manager import User
@@ -143,7 +143,7 @@ class ServiceView(FlaskView):
     @login_required
     @route('/user/add/<sid>', methods=['GET', 'POST'])
     def user_add(self, sid):
-        form = UserAddForm()
+        form = UserServerForm()
         if request.method == 'POST' and form.validate_on_submit():
             user = User.objects(email=form.email.data).first()
             server = ServiceSettings.objects(id=sid).first()

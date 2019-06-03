@@ -63,7 +63,7 @@ class UploadM3uForm(FlaskForm):
     submit = SubmitField(lazy_gettext(u'Upload'))
 
 
-class UserAddForm(FlaskForm):
+class UserServerForm(FlaskForm):
     AVAILABLE_ROLES = [(constants.Roles.READ, 'Read'), (constants.Roles.WRITE, 'Write'),
                        (constants.Roles.ADMIN, 'Admin'), (constants.Roles.SUPPORT, 'Support')]
 

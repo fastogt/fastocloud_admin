@@ -65,11 +65,13 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                     {% trans %}Logout{% endtrans %}
                 </a>
             </div>
+            {% if (current_user.type != 0) %}
             <div class="col-md-1">
                 <a href="{{ url_for('UserView:remove') }}" class="btn btn-danger" role="button">
                     {% trans %}Delete{% endtrans %}
                 </a>
             </div>
+            {% endif %}
         </div>
     </div>
     <div class="row well">
