@@ -4,7 +4,7 @@ from flask_classy import FlaskView, route
 from flask import render_template, request, jsonify
 from flask_login import login_required, current_user
 
-from app.constants import StreamType
+import app.constants as constants
 from app import get_runtime_stream_folder
 from app.stream.stream_forms import EncodeStreamForm, RelayStreamForm, TimeshiftRecorderStreamForm, CatchupStreamForm, \
     TimeshiftPlayerStreamForm, TestLifeStreamForm, VodEncodeStreamForm, VodRelayStreamForm
@@ -228,7 +228,7 @@ class StreamView(FlaskView):
             stream = server.find_stream_by_id(sid)
             if stream:
                 type = stream.get_type()
-                if type == StreamType.RELAY:
+                if type == constants.StreamType.RELAY:
                     form = RelayStreamForm(obj=stream)
 
                     if request.method == 'POST' and form.validate_on_submit():
@@ -238,7 +238,7 @@ class StreamView(FlaskView):
 
                     return render_template('stream/relay/edit.html', form=form,
                                            feedback_dir=stream.generate_feedback_dir())
-                elif type == StreamType.ENCODE:
+                elif type == constants.StreamType.ENCODE:
                     form = EncodeStreamForm(obj=stream)
 
                     if request.method == 'POST' and form.validate_on_submit():
@@ -248,7 +248,7 @@ class StreamView(FlaskView):
 
                     return render_template('stream/encode/edit.html', form=form,
                                            feedback_dir=stream.generate_feedback_dir())
-                elif type == StreamType.TIMESHIFT_RECORDER:
+                elif type == constants.StreamType.TIMESHIFT_RECORDER:
                     form = TimeshiftRecorderStreamForm(obj=stream)
 
                     if request.method == 'POST':  # FIXME form.validate_on_submit()
@@ -259,7 +259,7 @@ class StreamView(FlaskView):
                     return render_template('stream/timeshift_recorder/edit.html', form=form,
                                            feedback_dir=stream.generate_feedback_dir(),
                                            timeshift_dir=stream.generate_timeshift_dir())
-                elif type == StreamType.CATCHUP:
+                elif type == constants.StreamType.CATCHUP:
                     form = CatchupStreamForm(obj=stream)
 
                     if request.method == 'POST':  # FIXME form.validate_on_submit()
@@ -270,7 +270,7 @@ class StreamView(FlaskView):
                     return render_template('stream/catchup/edit.html', form=form,
                                            feedback_dir=stream.generate_feedback_dir(),
                                            timeshift_dir=stream.generate_timeshift_dir())
-                elif type == StreamType.TIMESHIFT_PLAYER:
+                elif type == constants.StreamType.TIMESHIFT_PLAYER:
                     form = TimeshiftPlayerStreamForm(obj=stream)
 
                     if request.method == 'POST' and form.validate_on_submit():
@@ -280,7 +280,7 @@ class StreamView(FlaskView):
 
                     return render_template('stream/timeshift_player/edit.html', form=form,
                                            feedback_dir=stream.generate_feedback_dir())
-                elif type == StreamType.TEST_LIFE:
+                elif type == constants.StreamType.TEST_LIFE:
                     form = TestLifeStreamForm(obj=stream)
 
                     if request.method == 'POST':  # FIXME form.validate_on_submit()
@@ -290,7 +290,7 @@ class StreamView(FlaskView):
 
                     return render_template('stream/test_life/edit.html', form=form,
                                            feedback_dir=stream.generate_feedback_dir())
-                elif type == StreamType.VOD_RELAY:
+                elif type == constants.StreamType.VOD_RELAY:
                     form = VodRelayStreamForm(obj=stream)
 
                     if request.method == 'POST' and form.validate_on_submit():
@@ -300,7 +300,7 @@ class StreamView(FlaskView):
 
                     return render_template('stream/vod_relay/edit.html', form=form,
                                            feedback_dir=stream.generate_feedback_dir())
-                elif type == StreamType.VOD_ENCODE:
+                elif type == constants.StreamType.VOD_ENCODE:
                     form = VodEncodeStreamForm(obj=stream)
 
                     if request.method == 'POST' and form.validate_on_submit():

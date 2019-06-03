@@ -3,7 +3,6 @@ import struct
 import json
 import threading
 import select
-import zlib
 
 from datetime import datetime
 from app.client.client_constants import Commands, ClientStatus

@@ -5,7 +5,7 @@ from flask_mail import Message
 from flask_babel import gettext
 from itsdangerous import SignatureExpired, URLSafeTimedSerializer
 
-from app.constants import AVAILABLE_LOCALES_PAIRS, DEFAULT_LOCALE, AVAILABLE_LOCALES
+import app.constants as constants
 from app.utils.utils import is_valid_email
 from app import app, mail, login_manager, babel
 from app.home.user_loging_manager import User, login_user_wrap
@@ -29,6 +29,7 @@ def send_email(email: str, subject: str, message: str):
 
 def post_login(form: SigninForm):
     if not form.validate_on_submit():
+        flash_error(form.errors)
         return render_template('home/login.html', form=form)
 
     check_user = User.objects(email=form.email.data).first()
@@ -58,7 +59,7 @@ class HomeView(FlaskView):
         self._confirm_link_generator = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
     def index(self):
-        languages = AVAILABLE_LOCALES_PAIRS
+        languages = constants.AVAILABLE_LOCALES_PAIRS
         return render_template('index.html', languages=languages)
 
     @route('/robots.txt')
@@ -82,8 +83,8 @@ class HomeView(FlaskView):
             return render_template('contact.html', form=form)
 
     @route('/language/<language>')
-    def set_language(self, language=DEFAULT_LOCALE):
-        founded = next((x for x in AVAILABLE_LOCALES if x == language), None)
+    def set_language(self, language=constants.DEFAULT_LOCALE):
+        founded = next((x for x in constants.AVAILABLE_LOCALES if x == language), None)
         if founded:
             session['language'] = founded
 
@@ -130,6 +131,7 @@ class HomeView(FlaskView):
         form = SignupForm()
         if request.method == 'POST':
             if not form.validate_on_submit():
+                flash_error(form.errors)
                 return render_template('home/register.html', form=form)
 
             email = form.email.data
@@ -178,7 +180,7 @@ def get_locale():
     # otherwise try to guess the language from the user accept
     # header the browser transmits.  We support de/fr/en in this
     # example.  The best match wins.
-    return request.accept_languages.best_match(AVAILABLE_LOCALES)
+    return request.accept_languages.best_match(constants.AVAILABLE_LOCALES)
 
 
 def page_not_found(e):

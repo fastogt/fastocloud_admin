@@ -3,7 +3,7 @@ from flask_babel import lazy_gettext
 from wtforms.fields import StringField, FieldList, IntegerField, FormField, FloatField
 from wtforms.validators import InputRequired, Length, NumberRange
 
-from app.constants import MIN_URL_LENGTH, MAX_URL_LENGTH, MIN_ALPHA, MAX_ALPHA, MIN_PATH_LENGTH, MAX_PATH_LENGTH
+import app.constants as constants
 from app.common_entries import Rational, Size, Logo, InputUrls, InputUrl, OutputUrls, OutputUrl, HostAndPort
 
 
@@ -12,7 +12,7 @@ class UrlForm(Form):
                       validators=[InputRequired()], render_kw={'readonly': 'true'})
     uri = StringField(lazy_gettext(u'Url:'),
                       validators=[InputRequired(),
-                                  Length(min=MIN_URL_LENGTH, max=MAX_URL_LENGTH)])
+                                  Length(min=constants.MIN_URL_LENGTH, max=constants.MAX_URL_LENGTH)])
 
 
 class InputUrlForm(UrlForm):
@@ -33,7 +33,7 @@ class InputUrlsForm(Form):
 class OutputUrlForm(UrlForm):
     http_root = StringField(lazy_gettext(u'Http root:'),
                             validators=[InputRequired(),
-                                        Length(min=MIN_PATH_LENGTH, max=MAX_PATH_LENGTH)],
+                                        Length(min=constants.MIN_PATH_LENGTH, max=constants.MAX_PATH_LENGTH)],
                             render_kw={'readonly': 'true'})
 
 
@@ -53,7 +53,7 @@ class LogoForm(Form):
     x = IntegerField(lazy_gettext(u'Pos x:'), validators=[InputRequired()])
     y = IntegerField(lazy_gettext(u'Pos y:'), validators=[InputRequired()])
     alpha = FloatField(lazy_gettext(u'Alpha:'),
-                       validators=[InputRequired(), NumberRange(MIN_ALPHA, MAX_ALPHA)])
+                       validators=[InputRequired(), NumberRange(constants.MIN_ALPHA, constants.MAX_ALPHA)])
 
     def get_data(self) -> Logo:
         logo = Logo()
