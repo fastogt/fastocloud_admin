@@ -44,425 +44,437 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
         th.stream_actions {
             width: 25%;
         }
+
+
 </style>
 {{super()}}
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row well">
-        <div class="row">
-            <div class="col-md-8">
-                <p>{% trans %}Welcome{% endtrans %} {{ current_user.email }}</p>
-            </div>
-            <div class="col-md-1">
-                <a href="{{ url_for('UserView:settings') }}" class="btn btn-info" role="button">
-                    {% trans %}Settings{% endtrans %}
-                </a>
-            </div>
-            <div class="col-md-1">
-                <a href="{{ url_for('UserView:logout') }}" class="btn btn-warning" role="button">
-                    {% trans %}Logout{% endtrans %}
-                </a>
-            </div>
-            {% if (current_user.type != 0) %}
-            <div class="col-md-1">
-                <a href="{{ url_for('UserView:remove') }}" class="btn btn-danger" role="button">
-                    {% trans %}Delete{% endtrans %}
-                </a>
-            </div>
-            {% endif %}
-        </div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h1 class="panel-title"><a
+                href="{{ url_for('HomeView:index') }}">{{ config['PUBLIC_CONFIG'].site.title }}</a></h1>
     </div>
-    <div class="row well">
-        <div class="row">
-            <div class="col-md-2">
-                <select class="form-control" name="servers" onchange=OnServerChanged(this.value);>
-                    {% for server in servers %}
-                    {% if (service.id == server.id | string) %}
-                    <option value="{{ loop.index0 }}" selected>{{ server.name }}</option>
-                    {% else %}
-                    <option value="{{ loop.index0 }}">{{ server.name }}</option>
+    <div class="panel-body">
+        <div class="container-fluid">
+            <div class="row well">
+                <div class="row">
+                    <div class="col-md-8">
+                        <p>{% trans %}Welcome{% endtrans %} {{ current_user.email }}</p>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="{{ url_for('UserView:settings') }}" class="btn btn-info" role="button">
+                            {% trans %}Settings{% endtrans %}
+                        </a>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="{{ url_for('UserView:logout') }}" class="btn btn-warning" role="button">
+                            {% trans %}Logout{% endtrans %}
+                        </a>
+                    </div>
+                    {% if (current_user.type != 0) %}
+                    <div class="col-md-1">
+                        <a href="{{ url_for('UserView:remove') }}" class="btn btn-danger" role="button">
+                            {% trans %}Delete{% endtrans %}
+                        </a>
+                    </div>
                     {% endif %}
-                    {% endfor %}
-                </select>
+                </div>
             </div>
-            <div class="col-md-1">
-                {% if (service.status == service.status.INIT) %}
-                <a href="{{ url_for('ServiceView:connect') }}" class="btn btn-info" role="button">
-                    {% trans %}Connect{% endtrans %}
-                </a>
-                {% else %}
-                <a href="{{ url_for('ServiceView:disconnect') }}" class="btn btn-info" role="button">
-                    {% trans %}Disconnect{% endtrans %}
-                </a>
-                {% endif %}
-            </div>
-            <div class="col-md-1">
-                <a href="{{ url_for('ServiceView:activate') }}" role="button"
-                   {% if (service.status == service.status.INIT) %}
-                   class="btn btn-info disabled"
-                   {% else %}
-                   class="btn btn-info"
-                   {% endif %}>
-                    {% trans %}Activate{% endtrans %}
-                </a>
-            </div>
-            <div class="col-md-1">
-                <a href="{{ url_for('ServiceView:sync') }}" role="button"
-                   {% if (service.status == service.status.INIT) %}
-                   class="btn btn-info disabled"
-                   {% else %}
-                   class="btn btn-info"
-                   {% endif %}>
-                    {% trans %}Sync{% endtrans %}
-                </a>
-            </div>
-            <div class="col-md-1">
-                <a href="{{ url_for('ServiceView:view_playlist') }}" class="btn btn-success" role="button">
-                    {% trans %}Playlist{% endtrans %}
-                </a>
-            </div>
-            <div class="col-md-1">
-                <a href="{{ url_for('ServiceView:upload_m3u') }}" role="button" class="btn btn-success">
-                    {% trans %}Upload m3u{% endtrans %}
-                </a>
-            </div>
-            <div class="col-md-1">
-                <a href="{{ url_for('ServiceView:ping') }}" role="button"
-                   {% if (service.status == service.status.ACTIVE) %}
-                   class="btn btn-info"
-                   {% else %}
-                   class="btn btn-info disabled"
-                   {% endif %}>
-                    {% trans %}Ping{% endtrans %}
-                </a>
-            </div>
-            <div class="col-md-1">
-                <a href="{{ url_for('ServiceView:stop') }}" role="button"
-                   {% if (service.status == service.status.ACTIVE) %}
-                   class="btn btn-warning"
-                   {% else %}
-                   class="btn btn-warning disabled"
-                   {% endif %}>
-                    {% trans %}Stop{% endtrans %}
-                </a>
-            </div>
-            {% if (role == 3) %}
-            <div class="col-md-1">
-                <a href="{{ url_for('ServiceView:get_log') }}" role="button"
-                   {% if (service.status == service.status.ACTIVE) %}
-                   class="btn btn-success"
-                   {% else %}
-                   class="btn btn-success disabled"
-                   {% endif %}>
-                    {% trans %}Get log{% endtrans %}
-                </a>
-            </div>
-            <div class="col-md-1">
-                <a href="{{ url_for('ServiceView:view_log') }}" role="button" class="btn btn-info">
-                    {% trans %}View log{% endtrans %}
-                </a>
-            </div>
-            {% endif %}
-        </div>
-        </br>
-        <div class="row">
-            <div class="col-md-2">
-                <b>{% trans %}ID:{% endtrans %}</b>
-                <p id='service_id'>{{ service.id }}</p>
-            </div>
-            <div class="col-md-2">
-                <b>{% trans %}Timestamp:{% endtrans %}</b>
-                <p id='service_timestamp'>{{ service.timestamp }}</p>
-            </div>
-            <div class="col-md-2">
-                <b>{% trans %}Uptime:{% endtrans %}</b>
-                <p id='service_uptime'>{{ service.uptime }}</p>
-            </div>
-            <div class="col-md-2">
-                <b>{% trans %}Load:{% endtrans %}</b>
-                <p id='service_load_average'>{{ service.load_average }}</p>
-            </div>
-            <div class="col-md-2">
-                <b>{% trans %}State:{% endtrans %}</b>
-                <p id='service_status'>{{ ['INIT', 'CONNECTED', 'ACTIVE'][service.status] }}</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-                <b>{% trans %}CPU:{% endtrans %}</b>
-                <p id='service_cpu'>{{ service.cpu }}</p>
-            </div>
-            <div class="col-md-2">
-                <b>{% trans %}GPU:{% endtrans %}</b>
-                <p id='service_gpu'>{{ service.gpu }}</p>
-            </div>
-            <div class="col-md-2">
-                <b>{% trans %}Network in:{% endtrans %}</b>
-                <p id='service_bandwidth_in'>{{ service.bandwidth_in }}</p>
-            </div>
-            <div class="col-md-2">
-                <b>{% trans %}Network out:{% endtrans %}</b>
-                <p id='service_bandwidth_out'>{{ service.bandwidth_out }}</p>
-            </div>
-            <div class="col-md-2">
-                <b>{% trans %}Version:{% endtrans %}</b>
-                <p id='service_version'>{{ service.version }}</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-                <b>{% trans %}Memory total:{% endtrans %}</b>
-                <p id='service_memory_total'>{{ service.memory_total }}</p>
-            </div>
-            <div class="col-md-2">
-                <b>{% trans %}Memory free:{% endtrans %}</b>
-                <p id='service_free'>{{ service.memory_free }}</p>
-            </div>
-            <div class="col-md-2">
-                <b>{% trans %}Memory available:{% endtrans %}</b>
-                <p id='service_available'>{{ service.memory_available }}</p>
-            </div>
-            <div class="col-md-2">
-                <b>{% trans %}HDD total:{% endtrans %}</b>
-                <p id='service_hdd_total'>{{ service.hdd_total }}</p>
-            </div>
-            <div class="col-md-2">
-                <b>{% trans %}HDD free:{% endtrans %}</b>
-                <p id='service_hdd_free'>{{ service.memory_free }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="row well with-nav-tabs">
-        <div class="panel-heading">
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#streams" data-toggle="tab">Streams</a></li>
-                <li><a href="#vods" data-toggle="tab">Vods</a></li>
-            </ul>
-        </div>
-        <div class="panel-body">
-            <div class="tab-content">
-                <div class="tab-pane fade in active" id="streams">
-                    <div class="row">
-                        <table id='streams_table' class="table">
-                            <thead>
-                            <tr>
-                                <th class="stream_number">#</th>
-                                <th class="stream_name">{% trans %}Name{% endtrans %}</th>
-                                <th class="stream_type">{% trans %}Type{% endtrans %}</th>
-                                <th class="stream_status">{% trans %}Status{% endtrans %}</th>
-                                <th class="stream_restarts">{% trans %}Restarts{% endtrans %}</th>
-                                <th class="stream_cpu">{% trans %}CPU{% endtrans %}</th>
-                                <th class="stream_rss">{% trans %}RSS{% endtrans %}</th>
-                                <th class="stream_inbps">{% trans %}In BPS{% endtrans %}</th>
-                                <th class="stream_outbps">{% trans %}Out BPS{% endtrans %}</th>
-                                <th class="stream_work_time">{% trans %}In work time{% endtrans %}</th>
-                                <th class="stream_live_time">{% trans %}Live time{% endtrans %}</th>
-                                <th class="stream_actions">{% trans %}Actions{% endtrans %}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for rev in streams %}
-                            {% if (rev.type != 6 and rev.type != 7) %}
-                            <tr id='{{ rev.id }}'>
-                                <td>{{ loop.index }}</td>
-                                <td>{{ rev.name }}</td>
-                                <td>
-                                    {{ ['RELAY', 'ENCODE', 'TIMESHIFT_PLAYER', 'TIMESHIFT_RECORDER', 'CATCHUP',
-                                    'TEST_LIFE',
-                                    'VOD_RELAY', 'VOD_ENCODE'][rev.type] }}
-                                </td>
-                                <td>{{ ['NEW', 'INIT', 'STARTED', 'READY', 'PLAYING', 'FROZEN',
-                                    'WAITING'][rev.status] }}
-                                </td>
-                                <td>{{ rev.restarts }}</td>
-                                <td>{{ rev.cpu }}</td>
-                                <td>{{ rev.rss }}</td>
-                                <td>{{ rev.input_streams|sum(attribute='bps') }}</td>
-                                <td>{{ rev.output_streams|sum(attribute='bps') }}</td>
-                                <td>{{ rev.timestamp - rev.start_time }}</td>
-                                <td>{{ rev.timestamp - rev.loop_start_time }}</td>
-                                <td>
-                                    <button type="submit"
-                                            {% if (service.status == service.status.ACTIVE) %}
-                                            class="btn btn-success btn-xs"
-                                            {% else %}
-                                            class="btn btn-success btn-xs" disabled
-                                            {% endif %}
-                                            onclick="start_stream(this, '{{ rev.id }}')">
-                                        {% trans %}Start{% endtrans %}
-                                    </button>
-                                    <button type="submit"
-                                            {% if (service.status == service.status.ACTIVE) %}
-                                            class="btn btn-success btn-xs"
-                                            {% else %}
-                                            class="btn btn-success btn-xs" disabled
-                                            {% endif %}
-                                            onclick="stop_stream(this, '{{ rev.id }}')">
-                                        {% trans %}Stop{% endtrans %}
-                                    </button>
-                                    <button type="submit"
-                                            {% if (service.status == service.status.ACTIVE) %}
-                                            class="btn btn-success btn-xs"
-                                            {% else %}
-                                            class="btn btn-success btn-xs" disabled
-                                            {% endif %}
-                                            onclick="restart_stream(this, '{{ rev.id }}')">
-                                        {% trans %}Restart{% endtrans %}
-                                    </button>
-                                    <button type="submit" class="btn btn-success btn-xs"
-                                            onclick="edit_stream('{{ rev.id }}')">
-                                        {% trans %}Edit{% endtrans %}
-                                    </button>
-                                    <button type="submit" class="btn btn-danger btn-xs"
-                                            onclick="remove_stream('{{ rev.id }}')">
-                                        {% trans %}Remove{% endtrans %}
-                                    </button>
-                                    {% if (role == 3) %}
-                                    <button type="submit"
-                                            {% if (service.status == service.status.ACTIVE) %}
-                                            class="btn btn-success btn-xs"
-                                            {% else %}
-                                            class="btn btn-success btn-xs" disabled
-                                            {% endif %}
-                                            onclick="get_log_stream('{{ rev.id }}')">
-                                        {% trans %}Get log{% endtrans %}
-                                    </button>
-                                    <a href="{{ url_for('StreamView:view_log', sid=rev.id) }}"
-                                       class="btn btn-info btn-xs"
-                                       role="button">
-                                        {% trans %}View log{% endtrans %}
-                                    </a>
-                                    <button type="submit"
-                                            {% if (service.status == service.status.ACTIVE) %}
-                                            class="btn btn-success btn-xs"
-                                            {% else %}
-                                            class="btn btn-success btn-xs" disabled
-                                            {% endif %}
-                                            onclick="get_pipeline_stream('{{ rev.id }}')">
-                                        {% trans %}GPL{% endtrans %}
-                                    </button>
-                                    <a href="{{ url_for('StreamView:view_pipeline', sid=rev.id) }}"
-                                       class="btn btn-info btn-xs"
-                                       role="button">
-                                        {% trans %}VPL{% endtrans %}
-                                    </a>
-                                    {% endif %}
-                                </td>
-                            </tr>
+            <div class="row well">
+                <div class="row">
+                    <div class="col-md-2">
+                        <select class="form-control" name="servers" onchange=OnServerChanged(this.value);>
+                            {% for server in servers %}
+                            {% if (service.id == server.id | string) %}
+                            <option value="{{ loop.index0 }}" selected>{{ server.name }}</option>
+                            {% else %}
+                            <option value="{{ loop.index0 }}">{{ server.name }}</option>
                             {% endif %}
                             {% endfor %}
-                            </tbody>
-                        </table>
+                        </select>
                     </div>
-                    <div class="row">
-                        <button class="btn btn-success btn-send col-md-2" onclick="add_relay_stream()">
-                            {% trans %}Add relay{% endtrans %}
-                        </button>
-                        <button class="btn btn-success btn-send col-md-2" onclick="add_encode_stream()">
-                            {% trans %}Add encode{% endtrans %}
-                        </button>
-                        <button class="btn btn-success btn-send col-md-2" onclick="add_timeshift_recorder_stream()">
-                            {% trans %}Add timeshift recorder{% endtrans %}
-                        </button>
-                        <button class="btn btn-success btn-send col-md-2" onclick="add_catchup_stream()">
-                            {% trans %}Add catchup{% endtrans %}
-                        </button>
-                        <button class="btn btn-success btn-send col-md-2" onclick="add_timeshift_player_stream()">
-                            {% trans %}Add timeshift player{% endtrans %}
-                        </button>
-                        <button class="btn btn-success btn-send col-md-2" onclick="add_test_life_stream()">
-                            {% trans %}Add test life{% endtrans %}
-                        </button>
+                    <div class="col-md-1">
+                        {% if (service.status == service.status.INIT) %}
+                        <a href="{{ url_for('ServiceView:connect') }}" class="btn btn-info" role="button">
+                            {% trans %}Connect{% endtrans %}
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('ServiceView:disconnect') }}" class="btn btn-info" role="button">
+                            {% trans %}Disconnect{% endtrans %}
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-1">
+                        <a href="{{ url_for('ServiceView:activate') }}" role="button"
+                           {% if (service.status== service.status.INIT) %}
+                           class="btn btn-info disabled"
+                           {% else %}
+                           class="btn btn-info"
+                           {% endif %}>
+                            {% trans %}Activate{% endtrans %}
+                        </a>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="{{ url_for('ServiceView:sync') }}" role="button"
+                           {% if (service.status== service.status.INIT) %}
+                           class="btn btn-info disabled"
+                           {% else %}
+                           class="btn btn-info"
+                           {% endif %}>
+                            {% trans %}Sync{% endtrans %}
+                        </a>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="{{ url_for('ServiceView:view_playlist') }}" class="btn btn-success" role="button">
+                            {% trans %}Playlist{% endtrans %}
+                        </a>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="{{ url_for('ServiceView:upload_m3u') }}" role="button" class="btn btn-success">
+                            {% trans %}Upload m3u{% endtrans %}
+                        </a>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="{{ url_for('ServiceView:ping') }}" role="button"
+                           {% if (service.status== service.status.ACTIVE) %}
+                           class="btn btn-info"
+                           {% else %}
+                           class="btn btn-info disabled"
+                           {% endif %}>
+                            {% trans %}Ping{% endtrans %}
+                        </a>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="{{ url_for('ServiceView:stop') }}" role="button"
+                           {% if (service.status== service.status.ACTIVE) %}
+                           class="btn btn-warning"
+                           {% else %}
+                           class="btn btn-warning disabled"
+                           {% endif %}>
+                            {% trans %}Stop{% endtrans %}
+                        </a>
+                    </div>
+                    {% if (role == 3) %}
+                    <div class="col-md-1">
+                        <a href="{{ url_for('ServiceView:get_log') }}" role="button"
+                           {% if (service.status== service.status.ACTIVE) %}
+                           class="btn btn-success"
+                           {% else %}
+                           class="btn btn-success disabled"
+                           {% endif %}>
+                            {% trans %}Get log{% endtrans %}
+                        </a>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="{{ url_for('ServiceView:view_log') }}" role="button" class="btn btn-info">
+                            {% trans %}View log{% endtrans %}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                </br>
+                <div class="row">
+                    <div class="col-md-2">
+                        <b>{% trans %}ID:{% endtrans %}</b>
+                        <p id='service_id'>{{ service.id }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <b>{% trans %}Timestamp:{% endtrans %}</b>
+                        <p id='service_timestamp'>{{ service.timestamp }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <b>{% trans %}Uptime:{% endtrans %}</b>
+                        <p id='service_uptime'>{{ service.uptime }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <b>{% trans %}Load:{% endtrans %}</b>
+                        <p id='service_load_average'>{{ service.load_average }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <b>{% trans %}State:{% endtrans %}</b>
+                        <p id='service_status'>{{ ['INIT', 'CONNECTED', 'ACTIVE'][service.status] }}</p>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="vods">
-                    <div class="row">
-                        <table id='vods_table' class="table">
-                            <thead>
-                            <tr>
-                                <th class="stream_number">#</th>
-                                <th class="stream_name">{% trans %}Name{% endtrans %}</th>
-                                <th class="stream_type">{% trans %}Type{% endtrans %}</th>
-                                <th class="stream_status">{% trans %}Status{% endtrans %}</th>
-                                <th class="stream_restarts">{% trans %}Restarts{% endtrans %}</th>
-                                <th class="stream_cpu">{% trans %}CPU{% endtrans %}</th>
-                                <th class="stream_rss">{% trans %}RSS{% endtrans %}</th>
-                                <th class="stream_inbps">{% trans %}In BPS{% endtrans %}</th>
-                                <th class="stream_outbps">{% trans %}Out BPS{% endtrans %}</th>
-                                <th class="stream_work_time">{% trans %}In work time{% endtrans %}</th>
-                                <th class="stream_live_time">{% trans %}Live time{% endtrans %}</th>
-                                <th class="stream_actions">{% trans %}Actions{% endtrans %}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for vod in streams %}
-                            {% if (vod.type == 6 or vod.type == 7) %}
-                            <tr id='{{ vod.id }}'>
-                                <td>{{ loop.index }}</td>
-                                <td>{{ vod.name }}</td>
-                                <td>
-                                    {{ ['RELAY', 'ENCODE', 'TIMESHIFT_PLAYER', 'TIMESHIFT_RECORDER', 'CATCHUP',
-                                    'TEST_LIFE',
-                                    'VOD_RELAY', 'VOD_ENCODE'][vod.type] }}
-                                </td>
-                                <td>{{ ['NEW', 'INIT', 'STARTED', 'READY', 'PLAYING', 'FROZEN',
-                                    'WAITING'][vod.status] }}
-                                </td>
-                                <td>{{ vod.restarts }}</td>
-                                <td>{{ vod.cpu }}</td>
-                                <td>{{ vod.rss }}</td>
-                                <td>{{ vod.input_streams|sum(attribute='bps') }}</td>
-                                <td>{{ vod.output_streams|sum(attribute='bps') }}</td>
-                                <td>{{ vod.timestamp - vod.start_time }}</td>
-                                <td>{{ vod.timestamp - vod.loop_start_time }}</td>
-                                <td>
-                                    <button type="submit"
-                                            {% if (service.status == service.status.ACTIVE) %}
-                                            class="btn btn-success btn-xs"
-                                            {% else %}
-                                            class="btn btn-success btn-xs" disabled
-                                            {% endif %}
-                                            onclick="start_stream(this, '{{ vod.id }}')">
-                                        {% trans %}Refresh{% endtrans %}
-                                    </button>
-                                    <button type="submit" class="btn btn-success btn-xs"
-                                            onclick="edit_stream('{{ vod.id }}')">
-                                        {% trans %}Edit{% endtrans %}
-                                    </button>
-                                    <button type="submit"
-                                            {% if (service.status == service.status.ACTIVE) %}
-                                            class="btn btn-success btn-xs"
-                                            {% else %}
-                                            class="btn btn-success btn-xs" disabled
-                                            {% endif %}
-                                            onclick="get_log_stream('{{ vod.id }}')">
-                                        {% trans %}Get log{% endtrans %}
-                                    </button>
-                                    <a href="{{ url_for('StreamView:view_log', sid=vod.id) }}"
-                                       class="btn btn-info btn-xs"
-                                       role="button">
-                                        {% trans %}View log{% endtrans %}
-                                    </a>
-                                    <button type="submit" class="btn btn-danger btn-xs"
-                                            onclick="remove_stream('{{ vod.id }}')">
-                                        {% trans %}Remove{% endtrans %}
-                                    </button>
-                                </td>
-                            </tr>
-                            {% endif %}
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                <div class="row">
+                    <div class="col-md-2">
+                        <b>{% trans %}CPU:{% endtrans %}</b>
+                        <p id='service_cpu'>{{ service.cpu }}</p>
                     </div>
-                    <div class="row">
-                        <button class="btn btn-info btn-send col-md-6" onclick="add_vod_relay_stream()">
-                            {% trans %}Add vod relay{% endtrans %}
-                        </button>
-                        <button class="btn btn-info btn-send col-md-6" onclick="add_vod_encode_stream()">
-                            {% trans %}Add vod encode{% endtrans %}
-                        </button>
+                    <div class="col-md-2">
+                        <b>{% trans %}GPU:{% endtrans %}</b>
+                        <p id='service_gpu'>{{ service.gpu }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <b>{% trans %}Network in:{% endtrans %}</b>
+                        <p id='service_bandwidth_in'>{{ service.bandwidth_in }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <b>{% trans %}Network out:{% endtrans %}</b>
+                        <p id='service_bandwidth_out'>{{ service.bandwidth_out }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <b>{% trans %}Version:{% endtrans %}</b>
+                        <p id='service_version'>{{ service.version }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <b>{% trans %}Memory total:{% endtrans %}</b>
+                        <p id='service_memory_total'>{{ service.memory_total }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <b>{% trans %}Memory free:{% endtrans %}</b>
+                        <p id='service_free'>{{ service.memory_free }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <b>{% trans %}Memory available:{% endtrans %}</b>
+                        <p id='service_available'>{{ service.memory_available }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <b>{% trans %}HDD total:{% endtrans %}</b>
+                        <p id='service_hdd_total'>{{ service.hdd_total }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <b>{% trans %}HDD free:{% endtrans %}</b>
+                        <p id='service_hdd_free'>{{ service.memory_free }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row well with-nav-tabs">
+                <div class="panel-heading">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#streams" data-toggle="tab">Streams</a></li>
+                        <li><a href="#vods" data-toggle="tab">Vods</a></li>
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="streams">
+                            <div class="row">
+                                <table id='streams_table' class="table">
+                                    <thead>
+                                    <tr>
+                                        <th class="stream_number">#</th>
+                                        <th class="stream_name">{% trans %}Name{% endtrans %}</th>
+                                        <th class="stream_type">{% trans %}Type{% endtrans %}</th>
+                                        <th class="stream_status">{% trans %}Status{% endtrans %}</th>
+                                        <th class="stream_restarts">{% trans %}Restarts{% endtrans %}</th>
+                                        <th class="stream_cpu">{% trans %}CPU{% endtrans %}</th>
+                                        <th class="stream_rss">{% trans %}RSS{% endtrans %}</th>
+                                        <th class="stream_inbps">{% trans %}In BPS{% endtrans %}</th>
+                                        <th class="stream_outbps">{% trans %}Out BPS{% endtrans %}</th>
+                                        <th class="stream_work_time">{% trans %}In work time{% endtrans %}</th>
+                                        <th class="stream_live_time">{% trans %}Live time{% endtrans %}</th>
+                                        <th class="stream_actions">{% trans %}Actions{% endtrans %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for rev in streams %}
+                                    {% if (rev.type != 6 and rev.type != 7) %}
+                                    <tr id='{{ rev.id }}'>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ rev.name }}</td>
+                                        <td>
+                                            {{ ['RELAY', 'ENCODE', 'TIMESHIFT_PLAYER', 'TIMESHIFT_RECORDER', 'CATCHUP',
+                                            'TEST_LIFE',
+                                            'VOD_RELAY', 'VOD_ENCODE'][rev.type] }}
+                                        </td>
+                                        <td>{{ ['NEW', 'INIT', 'STARTED', 'READY', 'PLAYING', 'FROZEN',
+                                            'WAITING'][rev.status] }}
+                                        </td>
+                                        <td>{{ rev.restarts }}</td>
+                                        <td>{{ rev.cpu }}</td>
+                                        <td>{{ rev.rss }}</td>
+                                        <td>{{ rev.input_streams|sum(attribute='bps') }}</td>
+                                        <td>{{ rev.output_streams|sum(attribute='bps') }}</td>
+                                        <td>{{ rev.timestamp - rev.start_time }}</td>
+                                        <td>{{ rev.timestamp - rev.loop_start_time }}</td>
+                                        <td>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="start_stream(this, '{{ rev.id }}')">
+                                                {% trans %}Start{% endtrans %}
+                                            </button>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="stop_stream(this, '{{ rev.id }}')">
+                                                {% trans %}Stop{% endtrans %}
+                                            </button>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="restart_stream(this, '{{ rev.id }}')">
+                                                {% trans %}Restart{% endtrans %}
+                                            </button>
+                                            <button type="submit" class="btn btn-success btn-xs"
+                                                    onclick="edit_stream('{{ rev.id }}')">
+                                                {% trans %}Edit{% endtrans %}
+                                            </button>
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="remove_stream('{{ rev.id }}')">
+                                                {% trans %}Remove{% endtrans %}
+                                            </button>
+                                            {% if (role == 3) %}
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="get_log_stream('{{ rev.id }}')">
+                                                {% trans %}Get log{% endtrans %}
+                                            </button>
+                                            <a href="{{ url_for('StreamView:view_log', sid=rev.id) }}"
+                                               class="btn btn-info btn-xs"
+                                               role="button">
+                                                {% trans %}View log{% endtrans %}
+                                            </a>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="get_pipeline_stream('{{ rev.id }}')">
+                                                {% trans %}GPL{% endtrans %}
+                                            </button>
+                                            <a href="{{ url_for('StreamView:view_pipeline', sid=rev.id) }}"
+                                               class="btn btn-info btn-xs"
+                                               role="button">
+                                                {% trans %}VPL{% endtrans %}
+                                            </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <button class="btn btn-success btn-send col-md-2" onclick="add_relay_stream()">
+                                    {% trans %}Add relay{% endtrans %}
+                                </button>
+                                <button class="btn btn-success btn-send col-md-2" onclick="add_encode_stream()">
+                                    {% trans %}Add encode{% endtrans %}
+                                </button>
+                                <button class="btn btn-success btn-send col-md-2"
+                                        onclick="add_timeshift_recorder_stream()">
+                                    {% trans %}Add timeshift recorder{% endtrans %}
+                                </button>
+                                <button class="btn btn-success btn-send col-md-2" onclick="add_catchup_stream()">
+                                    {% trans %}Add catchup{% endtrans %}
+                                </button>
+                                <button class="btn btn-success btn-send col-md-2"
+                                        onclick="add_timeshift_player_stream()">
+                                    {% trans %}Add timeshift player{% endtrans %}
+                                </button>
+                                <button class="btn btn-success btn-send col-md-2" onclick="add_test_life_stream()">
+                                    {% trans %}Add test life{% endtrans %}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="vods">
+                            <div class="row">
+                                <table id='vods_table' class="table">
+                                    <thead>
+                                    <tr>
+                                        <th class="stream_number">#</th>
+                                        <th class="stream_name">{% trans %}Name{% endtrans %}</th>
+                                        <th class="stream_type">{% trans %}Type{% endtrans %}</th>
+                                        <th class="stream_status">{% trans %}Status{% endtrans %}</th>
+                                        <th class="stream_restarts">{% trans %}Restarts{% endtrans %}</th>
+                                        <th class="stream_cpu">{% trans %}CPU{% endtrans %}</th>
+                                        <th class="stream_rss">{% trans %}RSS{% endtrans %}</th>
+                                        <th class="stream_inbps">{% trans %}In BPS{% endtrans %}</th>
+                                        <th class="stream_outbps">{% trans %}Out BPS{% endtrans %}</th>
+                                        <th class="stream_work_time">{% trans %}In work time{% endtrans %}</th>
+                                        <th class="stream_live_time">{% trans %}Live time{% endtrans %}</th>
+                                        <th class="stream_actions">{% trans %}Actions{% endtrans %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for vod in streams %}
+                                    {% if (vod.type == 6 or vod.type == 7) %}
+                                    <tr id='{{ vod.id }}'>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ vod.name }}</td>
+                                        <td>
+                                            {{ ['RELAY', 'ENCODE', 'TIMESHIFT_PLAYER', 'TIMESHIFT_RECORDER', 'CATCHUP',
+                                            'TEST_LIFE',
+                                            'VOD_RELAY', 'VOD_ENCODE'][vod.type] }}
+                                        </td>
+                                        <td>{{ ['NEW', 'INIT', 'STARTED', 'READY', 'PLAYING', 'FROZEN',
+                                            'WAITING'][vod.status] }}
+                                        </td>
+                                        <td>{{ vod.restarts }}</td>
+                                        <td>{{ vod.cpu }}</td>
+                                        <td>{{ vod.rss }}</td>
+                                        <td>{{ vod.input_streams|sum(attribute='bps') }}</td>
+                                        <td>{{ vod.output_streams|sum(attribute='bps') }}</td>
+                                        <td>{{ vod.timestamp - vod.start_time }}</td>
+                                        <td>{{ vod.timestamp - vod.loop_start_time }}</td>
+                                        <td>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="start_stream(this, '{{ vod.id }}')">
+                                                {% trans %}Refresh{% endtrans %}
+                                            </button>
+                                            <button type="submit" class="btn btn-success btn-xs"
+                                                    onclick="edit_stream('{{ vod.id }}')">
+                                                {% trans %}Edit{% endtrans %}
+                                            </button>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="get_log_stream('{{ vod.id }}')">
+                                                {% trans %}Get log{% endtrans %}
+                                            </button>
+                                            <a href="{{ url_for('StreamView:view_log', sid=vod.id) }}"
+                                               class="btn btn-info btn-xs"
+                                               role="button">
+                                                {% trans %}View log{% endtrans %}
+                                            </a>
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="remove_stream('{{ vod.id }}')">
+                                                {% trans %}Remove{% endtrans %}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <button class="btn btn-info btn-send col-md-6" onclick="add_vod_relay_stream()">
+                                    {% trans %}Add vod relay{% endtrans %}
+                                </button>
+                                <button class="btn btn-info btn-send col-md-6" onclick="add_vod_encode_stream()">
+                                    {% trans %}Add vod encode{% endtrans %}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -788,5 +800,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
+
+
 </script>
 {% endblock %}

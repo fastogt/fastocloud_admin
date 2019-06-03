@@ -17,71 +17,79 @@ Settings | {{ config['PUBLIC_CONFIG'].site.title }}
 {{super()}}
 {% endblock %}
 {% block content %}
-<div class="container">
-    <div class="row well">
-        <div class="col-md-8">
-            <p>{% trans %}Settings{% endtrans %}</p>
-        </div>
-        <div class="col-md-2">
-            <a href="{{ url_for('UserView:dashboard') }}" role="button" class="btn btn-info">
-                {% trans %}Dashboard{% endtrans %}
-            </a>
-        </div>
-        <div class="col-md-2">
-            <a href="{{ url_for('UserView:logout') }}" class="btn btn-warning" role="button">
-                {% trans %}Logout{% endtrans %}
-            </a>
-        </div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h1 class="panel-title"><a
+                href="{{ url_for('HomeView:index') }}">{{ config['PUBLIC_CONFIG'].site.title }}</a></h1>
     </div>
-    <div class="row well">
-        <form action="" method="post" class="form" role="form">
-            {{ form.hidden_tag() }}
-            {{ render_bootstrap_field(form.locale) }}
-            {{ form_field(form.submit, class="btn btn-success") }}
-        </form>
-    </div>
-    <div class="row">
-        {% if servers|length == 0 %}
-        <div class="alert alert-info">To open dashboard you should have at least 1 server, please add it.</div>
-        {% endif %}
-    </div>
-    <div class="row well">
-        <div class="row">
-            <table id='servers_table' class="table">
-                <thead>
-                <tr>
-                    <th class="number">#</th>
-                    <th class="value">{% trans %}Name{% endtrans %}</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for server in servers %}
-                <tr id='{{ server.id }}'>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ server.name }}</td>
-                    <td>
-                        <button type="submit" class="btn btn-success btn-xs" onclick="edit_server('{{ server.id }}')">
-                            {% trans %}Edit{% endtrans %}
-                        </button>
-                        <button type="submit" class="btn btn-success btn-xs"
-                                onclick="add_user_to_server('{{ server.id }}')">
-                            {% trans %}Add user{% endtrans %}
-                        </button>
-                        <button type="submit" class="btn btn-danger btn-xs" onclick="remove_server('{{ server.id }}')">
-                            {% trans %}Remove{% endtrans %}
-                        </button>
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-success" onclick="add_server()">
-                {% trans %}Add server{% endtrans %}
-            </button>
+    <div class="panel-body">
+        <div class="container-fluid">
+            <div class="row well">
+                <div class="col-md-8">
+                    <p>{% trans %}Settings{% endtrans %}</p>
+                </div>
+                <div class="col-md-2">
+                    <a href="{{ url_for('UserView:dashboard') }}" role="button" class="btn btn-info">
+                        {% trans %}Dashboard{% endtrans %}
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <a href="{{ url_for('UserView:logout') }}" class="btn btn-warning" role="button">
+                        {% trans %}Logout{% endtrans %}
+                    </a>
+                </div>
+            </div>
+            <div class="row well">
+                <form action="" method="post" class="form" role="form">
+                    {{ form.hidden_tag() }}
+                    {{ render_bootstrap_field(form.locale) }}
+                    {{ form_field(form.submit, class="btn btn-success") }}
+                </form>
+            </div>
+            <div class="row">
+                {% if servers|length == 0 %}
+                <div class="alert alert-info">To open dashboard you should have at least 1 server, please add it.</div>
+                {% endif %}
+            </div>
+            <div class="row well">
+                <div class="row">
+                    <table id='servers_table' class="table">
+                        <thead>
+                        <tr>
+                            <th class="number">#</th>
+                            <th class="value">{% trans %}Name{% endtrans %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for server in servers %}
+                        <tr id='{{ server.id }}'>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ server.name }}</td>
+                            <td>
+                                <button type="submit" class="btn btn-success btn-xs"
+                                        onclick="edit_server('{{ server.id }}')">
+                                    {% trans %}Edit{% endtrans %}
+                                </button>
+                                <button type="submit" class="btn btn-success btn-xs"
+                                        onclick="add_user_to_server('{{ server.id }}')">
+                                    {% trans %}Add user{% endtrans %}
+                                </button>
+                                <button type="submit" class="btn btn-danger btn-xs"
+                                        onclick="remove_server('{{ server.id }}')">
+                                    {% trans %}Remove{% endtrans %}
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <button type="submit" class="btn btn-success" onclick="add_server()">
+                    {% trans %}Add server{% endtrans %}
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -206,5 +214,8 @@ Settings | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
+
+
+
 </script>
 {% endblock %}
