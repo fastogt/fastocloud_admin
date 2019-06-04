@@ -5,36 +5,38 @@ Upload m3u | {{ config['PUBLIC_CONFIG'].site.title }}
 
 
 {% block content %}
-<div class="container center-block">
-    <div class="panel panel-default text-center">
-        <div class="panel-heading">
-            <h1 class="panel-title">
-                <a href="{{ url_for('HomeView:index') }}">{{ config['PUBLIC_CONFIG'].site.title }}</a>
-            </h1>
-        </div>
-        <div class="panel-body">
-            <h3>{% trans %}Upload m3u file{% endtrans %}</h3>
-            <p>{% trans %}Note: Please upload m3u file for service.{% endtrans %}</p>
-            {{ util.flashed_messages(dismissible=True, container=False) }}
-            <form action="{{ url_for('ServiceView:upload_file') }}" method="POST" class="form" role="form"
-                  enctype="multipart/form-data">
-                {{ form.hidden_tag() }}
-                <div class="col-md-4">
-                    {{ form.file }}
-                </div>
-                <div class="col-md-4">
-                    {{ form.type }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_field(form.submit, class="btn") }}
-                </div>
-            </form>
-        </div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h1 class="panel-title">
+            <a href="{{ url_for('HomeView:index') }}">{{ config['PUBLIC_CONFIG'].site.title }}</a>
+        </h1>
     </div>
-    <div class="text-center">
-        <a href="{{ url_for('UserView:dashboard') }}" role="button" class="btn btn-info">
-            {% trans %}Dashboard{% endtrans %}
-        </a>
+    <div class="panel-body">
+        <div class="container-fluid">
+            <div class="row well">
+                <h3>{% trans %}Upload m3u file{% endtrans %}</h3>
+                <p>{% trans %}Note: Please upload m3u file for service.{% endtrans %}</p>
+                {{ util.flashed_messages(dismissible=True, container=False) }}
+                <form action="{{ url_for('ServiceView:upload_file') }}" method="POST" class="form" role="form"
+                      enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <div class="col-md-4">
+                        {{ form.file }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.type }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_field(form.submit, class="btn btn-success") }}
+                    </div>
+                </form>
+            </div>
+            <div class="row">
+                <a href="{{ url_for('UserView:dashboard') }}" role="button" class="btn btn-info">
+                    {% trans %}Dashboard{% endtrans %}
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 {%- endblock %}
