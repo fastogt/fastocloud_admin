@@ -45,6 +45,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             width: 25%;
         }
 
+
 </style>
 {{super()}}
 {% endblock %}
@@ -126,7 +127,8 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                         </a>
                     </div>
                     <div class="col-md-1">
-                        <a href="{{ url_for('ServiceView:playlist', sid=service.id) }}" class="btn btn-success" role="button">
+                        <a href="{{ url_for('ServiceView:playlist', sid=service.id) }}" class="btn btn-success"
+                           role="button">
                             {% trans %}Playlist{% endtrans %}
                         </a>
                     </div>
@@ -538,9 +540,9 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
       var service_gpu = $('#service_gpu');
       service_gpu.text(service.gpu);
       var service_bandwidth_in = $('#service_bandwidth_in');
-      service_bandwidth_in.text(service.bandwidth_in);
+      service_bandwidth_in.text((service.bandwidth_in / (1024 * 1024)).toFixed(4) + ' Mbps');
       var service_bandwidth_out = $('#service_bandwidth_out');
-      service_bandwidth_out.text(service.bandwidth_out);
+      service_bandwidth_out.text((service.bandwidth_out / (1024 * 1024)).toFixed(4) + ' Mbps');
       var service_version = $('#service_version');
       service_version.text(service.version);
       var service_status = $('#service_status');
@@ -799,6 +801,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
+
 
 
 </script>
