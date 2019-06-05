@@ -46,6 +46,8 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
         }
 
 
+
+
 </style>
 {{super()}}
 {% endblock %}
@@ -536,9 +538,9 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
       var service_load_average = $('#service_load_average');
       service_load_average.text(service.load_average);
       var service_cpu = $('#service_cpu');
-      service_cpu.text(service.cpu);
+      service_cpu.text(service.cpu + '%');
       var service_gpu = $('#service_gpu');
-      service_gpu.text(service.gpu);
+      service_gpu.text(service.gpu + '%');
       var service_bandwidth_in = $('#service_bandwidth_in');
       service_bandwidth_in.text((service.bandwidth_in / (1024 * 1024 / 8)).toFixed(4) + ' Mbps');
       var service_bandwidth_out = $('#service_bandwidth_out');
@@ -549,17 +551,18 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
       const kStatuses = ['INIT', 'CONNECTED', 'ACTIVE'];
       service_status.text(kStatuses[service.status]);
       var service_memory_total = $('#service_memory_total');
-      service_memory_total.text(service.memory_total);
+      service_memory_total.text(service.memory_total + ' MB');
       var service_memory_free = $('#service_memory_free');
-      service_memory_free.text(service.memory_free);
+      service_memory_free.text(service.memory_free  + ' MB');
       var service_memory_available = $('#service_memory_available');
-      service_memory_available.text(service.memory_available);
+      service_memory_available.text(service.memory_available  + ' MB');
       var service_hdd_total = $('#service_hdd_total');
-      service_hdd_total.text(service.hdd_total);
+      service_hdd_total.text(service.hdd_total  + ' MB');
       var service_hdd_free = $('#service_hdd_free');
-      service_hdd_free.text(service.hdd_free);
+      service_hdd_free.text(service.hdd_free  + ' MB');
       var service_timestamp = $('#service_timestamp');
-      service_timestamp.text(service.timestamp);
+      var current_datetime = new Date(service.timestamp);
+      service_timestamp.text(current_datetime.toString());
     });
     // stream
     function add_stream_entry(url) {
@@ -801,6 +804,8 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
+
+
 
 
 
