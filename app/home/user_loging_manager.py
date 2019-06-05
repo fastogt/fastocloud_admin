@@ -36,7 +36,7 @@ class User(UserMixin, Document):
     type = IntField(default=Type.USER)
 
     settings = EmbeddedDocumentField(Settings, default=Settings)
-    servers = ListField(ReferenceField(ServiceSettings), default=[])
+    servers = ListField(ReferenceField(ServiceSettings, reverse_delete_rule=PULL), default=[])
 
     def logout(self):
         session.pop(SERVER_POSITION_SESSION_FIELD)
@@ -45,6 +45,9 @@ class User(UserMixin, Document):
     def add_server(self, server: ServiceSettings):
         self.servers.append(server)
         self.save()
+
+    def remove_server(self, server: ServiceSettings):
+        server.delete()
 
     def set_current_server_position(self, pos: int):
         session[SERVER_POSITION_SESSION_FIELD] = pos

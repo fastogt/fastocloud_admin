@@ -123,6 +123,13 @@ class ServiceView(FlaskView):
             return '<pre>{0}</pre>'.format(server.view_playlist())
         return '''<pre>Not found, please create server firstly.</pre>'''
 
+    def playlist(self, sid):
+        server = ServiceSettings.objects(id=sid).first()
+        if server:
+            return server.generate_playlist(), 200
+
+        return jsonify(status='failed'), 404
+
     @login_required
     def view_log(self):
         server = current_user.get_current_server()
@@ -175,7 +182,7 @@ class ServiceView(FlaskView):
         sid = request.form['sid']
         server = ServiceSettings.objects(id=sid).first()
         if server:
-            server.delete()
+            current_user.remove_server(server)
             return jsonify(status='ok'), 200
 
         return jsonify(status='failed'), 404
