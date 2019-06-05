@@ -1,7 +1,7 @@
 import os
 
 from flask_classy import FlaskView, route
-from flask import render_template, redirect, url_for, request, jsonify
+from flask import render_template, redirect, url_for, request, jsonify, Response
 from flask_login import login_required, current_user
 
 from app import get_runtime_folder
@@ -120,7 +120,7 @@ class ServiceView(FlaskView):
     def playlist(self, sid):
         server = ServiceSettings.objects(id=sid).first()
         if server:
-            return server.generate_playlist(), 200
+            return Response(server.generate_playlist(), mimetype='application/x-mpequrl'), 200
 
         return jsonify(status='failed'), 404
 
