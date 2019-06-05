@@ -25,8 +25,10 @@ class StreamView(FlaskView):
     def start(self):
         server = current_user.get_current_server()
         if server:
-            sid = request.form['sid']
-            server.start_stream(sid)
+            data = request.get_json()
+            sids = data['sids']
+            for sid in sids:
+                server.start_stream(sid)
             return jsonify(status='ok'), 200
         return jsonify(status='failed'), 404
 
@@ -35,8 +37,10 @@ class StreamView(FlaskView):
     def stop(self):
         server = current_user.get_current_server()
         if server:
-            sid = request.form['sid']
-            server.stop_stream(sid)
+            data = request.get_json()
+            sids = data['sids']
+            for sid in sids:
+                server.start_stream(sid)
             return jsonify(status='ok'), 200
         return jsonify(status='failed'), 404
 
@@ -45,8 +49,10 @@ class StreamView(FlaskView):
     def restart(self):
         server = current_user.get_current_server()
         if server:
-            sid = request.form['sid']
-            server.restart_stream(sid)
+            data = request.get_json()
+            sids = data['sids']
+            for sid in sids:
+                server.start_stream(sid)
             return jsonify(status='ok'), 200
         return jsonify(status='failed'), 404
 
@@ -318,8 +324,11 @@ class StreamView(FlaskView):
     def remove(self):
         server = current_user.get_current_server()
         if server:
-            sid = request.form['sid']
-            server.remove_stream(sid)
+            data = request.get_json()
+            sids = data['sids']
+            for sid in sids:
+                server.stop_stream(sid)
+                server.remove_stream(sid)
             return jsonify(status='ok'), 200
         return jsonify(status='failed'), 404
 

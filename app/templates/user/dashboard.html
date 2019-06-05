@@ -46,6 +46,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
         }
 
 
+
 </style>
 {{super()}}
 {% endblock %}
@@ -711,8 +712,8 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
         $.ajax({
             url: "{{ url_for('StreamView:remove') }}",
             type: "POST",
-            dataType: 'json',
-            data: {"sid":sid},
+            contentType : 'application/json',
+            data: JSON.stringify({sids: [sid]}),
             success: function (response) {
                 console.log(response);
                 window.location.reload();
@@ -757,8 +758,8 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
         $.ajax({
             url: "{{ url_for('StreamView:start') }}",
             type: "POST",
-            dataType: 'json',
-            data: {"sid":sid},
+            contentType : 'application/json',
+            data: JSON.stringify({sids: [sid]}),
             success: function (response) {
                 console.log(response);
                 // window.location.reload();
@@ -773,8 +774,8 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
         $.ajax({
             url: "{{ url_for('StreamView:stop') }}",
             type: "POST",
-            dataType: 'json',
-            data: {"sid":sid},
+            contentType : 'application/json',
+            data: JSON.stringify({sids: [sid]}),
             success: function (response) {
                 console.log(response);
                 // window.location.reload();
@@ -789,8 +790,8 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
         $.ajax({
             url: "{{ url_for('StreamView:restart') }}",
             type: "POST",
-            dataType: 'json',
-            data: {"sid":sid},
+            contentType : 'application/json',
+            data: JSON.stringify({sids: [sid]}),
             success: function (response) {
                 console.log(response);
                 // window.location.reload();
@@ -800,7 +801,6 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
-
 
 </script>
 {% endblock %}
