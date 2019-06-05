@@ -40,7 +40,7 @@ class StreamView(FlaskView):
             data = request.get_json()
             sids = data['sids']
             for sid in sids:
-                server.start_stream(sid)
+                server.stop_stream(sid)
             return jsonify(status='ok'), 200
         return jsonify(status='failed'), 404
 
@@ -52,7 +52,7 @@ class StreamView(FlaskView):
             data = request.get_json()
             sids = data['sids']
             for sid in sids:
-                server.start_stream(sid)
+                server.restart_stream(sid)
             return jsonify(status='ok'), 200
         return jsonify(status='failed'), 404
 
