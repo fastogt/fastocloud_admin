@@ -540,9 +540,9 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
       var service_gpu = $('#service_gpu');
       service_gpu.text(service.gpu);
       var service_bandwidth_in = $('#service_bandwidth_in');
-      service_bandwidth_in.text((service.bandwidth_in / (1024 * 1024)).toFixed(4) + ' Mbps');
+      service_bandwidth_in.text((service.bandwidth_in / (1024 * 1024 / 8)).toFixed(4) + ' Mbps');
       var service_bandwidth_out = $('#service_bandwidth_out');
-      service_bandwidth_out.text((service.bandwidth_out / (1024 * 1024)).toFixed(4) + ' Mbps');
+      service_bandwidth_out.text((service.bandwidth_out / (1024 * 1024 / 8)).toFixed(4) + ' Mbps');
       var service_version = $('#service_version');
       service_version.text(service.version);
       var service_status = $('#service_status');
