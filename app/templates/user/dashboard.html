@@ -45,8 +45,6 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             width: 25%;
         }
 
-
-
 </style>
 {{super()}}
 {% endblock %}
@@ -128,7 +126,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                         </a>
                     </div>
                     <div class="col-md-1">
-                        <a href="{{ url_for('ServiceView:view_playlist') }}" class="btn btn-success" role="button">
+                        <a href="{{ url_for('ServiceView:playlist', sid=service.id) }}" class="btn btn-success" role="button">
                             {% trans %}Playlist{% endtrans %}
                         </a>
                     </div>
@@ -801,6 +799,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
+
 
 </script>
 {% endblock %}
