@@ -229,11 +229,11 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                     </div>
                     <div class="col-md-2">
                         <b>{% trans %}Memory free:{% endtrans %}</b>
-                        <p id='service_free'>{{ service.memory_free }}</p>
+                        <p id='service_memory_free'>{{ service.memory_free }}</p>
                     </div>
                     <div class="col-md-2">
                         <b>{% trans %}Memory available:{% endtrans %}</b>
-                        <p id='service_available'>{{ service.memory_available }}</p>
+                        <p id='service_memory_available'>{{ service.memory_available }}</p>
                     </div>
                     <div class="col-md-2">
                         <b>{% trans %}HDD total:{% endtrans %}</b>
@@ -551,15 +551,15 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
       const kStatuses = ['INIT', 'CONNECTED', 'ACTIVE'];
       service_status.text(kStatuses[service.status]);
       var service_memory_total = $('#service_memory_total');
-      service_memory_total.text(service.memory_total + ' MB');
+      service_memory_total.text(service.memory_total / (1024 * 1024).toFixed(4) + ' MB');
       var service_memory_free = $('#service_memory_free');
-      service_memory_free.text(service.memory_free  + ' MB');
+      service_memory_free.text(service.memory_free / (1024 * 1024).toFixed(4) + ' MB');
       var service_memory_available = $('#service_memory_available');
-      service_memory_available.text(service.memory_available  + ' MB');
+      service_memory_available.text(service.memory_available / (1024 * 1024).toFixed(4) + ' MB');
       var service_hdd_total = $('#service_hdd_total');
-      service_hdd_total.text(service.hdd_total  + ' MB');
+      service_hdd_total.text(service.hdd_total / (1024 * 1024).toFixed(4)  + ' MB');
       var service_hdd_free = $('#service_hdd_free');
-      service_hdd_free.text(service.hdd_free  + ' MB');
+      service_hdd_free.text(service.hdd_free / (1024 * 1024).toFixed(4)  + ' MB');
       var service_timestamp = $('#service_timestamp');
       var current_datetime = new Date(service.timestamp);
       service_timestamp.text(current_datetime);
