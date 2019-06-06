@@ -261,7 +261,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                         <th class="stream_status">{% trans %}Status{% endtrans %}</th>
                                         <th class="stream_restarts">{% trans %}Restarts{% endtrans %}</th>
                                         <th class="stream_cpu">{% trans %}CPU{% endtrans %}</th>
-                                        <th class="stream_rss">{% trans %}RSS{% endtrans %}</th>
+                                        <th class="stream_rss">{% trans %}RSS (MB){% endtrans %}</th>
                                         <th class="stream_inbps">{% trans %}In BPS{% endtrans %}</th>
                                         <th class="stream_outbps">{% trans %}Out BPS{% endtrans %}</th>
                                         <th class="stream_work_time">{% trans %}In work time{% endtrans %}</th>
@@ -285,7 +285,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                         </td>
                                         <td>{{ rev.restarts }}</td>
                                         <td>{{ rev.cpu }}</td>
-                                        <td>{{ rev.rss / (1024 * 1024) | round(4, 'floor') }}</td>
+                                        <td>{{ (rev.rss / (1024 * 1024)) | round(4, 'floor') }}</td>
                                         <td>{{ rev.input_streams|sum(attribute='bps') }}</td>
                                         <td>{{ rev.output_streams|sum(attribute='bps') }}</td>
                                         <td>{{ rev.timestamp - rev.start_time }}</td>
