@@ -561,7 +561,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
       var service_hdd_free = $('#service_hdd_free');
       service_hdd_free.text(service.hdd_free / (1024 * 1024).toFixed(4)  + ' MB');
       var service_timestamp = $('#service_timestamp');
-      var current_datetime = new Date(service.timestamp);
+      var current_datetime = Date(service.timestamp);
       service_timestamp.text(current_datetime);
     });
     // stream
