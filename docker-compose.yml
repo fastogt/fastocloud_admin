@@ -1,0 +1,27 @@
+version: '2'
+services:
+    mongodb:
+        image: mongo:latest
+        container_name: "mongodb"
+        ports:
+            - 27017:27017
+    iptv_admin:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        image: iptv_admin:1.0.0
+        container_name: iptv_admin
+        depends_on:
+            - mongodb
+        command: ./server.py
+        ports:
+            - 8080:8080
+    nginx:
+        image: nginx
+        container_name: nginx
+        depends_on:
+            - iptv_admin
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        ports:
+            - 80:80
