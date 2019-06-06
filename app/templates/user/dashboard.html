@@ -285,7 +285,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                         </td>
                                         <td>{{ rev.restarts }}</td>
                                         <td>{{ rev.cpu }}</td>
-                                        <td>{{ rev.rss / (1024 * 1024) | round(4, 'floor') }} MB</td>
+                                        <td>{{ rev.rss / (1024 * 1024) | round(4, 'floor') }}</td>
                                         <td>{{ rev.input_streams|sum(attribute='bps') }}</td>
                                         <td>{{ rev.output_streams|sum(attribute='bps') }}</td>
                                         <td>{{ rev.timestamp - rev.start_time }}</td>
@@ -512,7 +512,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
       row.eq(3).text(kStatuses[stream.status]);
       row.eq(4).text(stream.restarts);
       row.eq(5).text(stream.cpu);
-      row.eq(6).text(stream.rss / (1024 * 1024).toFixed(4));
+      row.eq(6).text((stream.rss / (1024 * 1024)).toFixed(4));
       var in_bps = 0;
       for(var i in stream.input_streams) {
         in_bps += stream.input_streams[i].bps;
@@ -547,15 +547,15 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
       const kStatuses = ['INIT', 'CONNECTED', 'ACTIVE'];
       service_status.text(kStatuses[service.status]);
       var service_memory_total = $('#service_memory_total');
-      service_memory_total.text(service.memory_total / (1024 * 1024).toFixed(4) + ' MB');
+      service_memory_total.text((service.memory_total / (1024 * 1024)).toFixed(4) + ' MB');
       var service_memory_free = $('#service_memory_free');
-      service_memory_free.text(service.memory_free / (1024 * 1024).toFixed(4) + ' MB');
+      service_memory_free.text((service.memory_free / (1024 * 1024)).toFixed(4) + ' MB');
       var service_memory_available = $('#service_memory_available');
-      service_memory_available.text(service.memory_available / (1024 * 1024).toFixed(4) + ' MB');
+      service_memory_available.text((service.memory_available / (1024 * 1024)).toFixed(4) + ' MB');
       var service_hdd_total = $('#service_hdd_total');
-      service_hdd_total.text(service.hdd_total / (1024 * 1024).toFixed(4)  + ' MB');
+      service_hdd_total.text((service.hdd_total / (1024 * 1024)).toFixed(4)  + ' MB');
       var service_hdd_free = $('#service_hdd_free');
-      service_hdd_free.text(service.hdd_free / (1024 * 1024).toFixed(4)  + ' MB');
+      service_hdd_free.text((service.hdd_free / (1024 * 1024)).toFixed(4)  + ' MB');
       var service_timestamp = $('#service_timestamp');
       var current_datetime = Date(service.timestamp);
       service_timestamp.text(current_datetime);
