@@ -44,10 +44,6 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
         th.stream_actions {
             width: 25%;
         }
-
-
-
-
 </style>
 {{super()}}
 {% endblock %}
@@ -401,7 +397,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                         <th class="stream_status">{% trans %}Status{% endtrans %}</th>
                                         <th class="stream_restarts">{% trans %}Restarts{% endtrans %}</th>
                                         <th class="stream_cpu">{% trans %}CPU{% endtrans %}</th>
-                                        <th class="stream_rss">{% trans %}RSS{% endtrans %}</th>
+                                        <th class="stream_rss">{% trans %}RSS (MB){% endtrans %}</th>
                                         <th class="stream_inbps">{% trans %}In BPS{% endtrans %}</th>
                                         <th class="stream_outbps">{% trans %}Out BPS{% endtrans %}</th>
                                         <th class="stream_work_time">{% trans %}In work time{% endtrans %}</th>
@@ -516,7 +512,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
       row.eq(3).text(kStatuses[stream.status]);
       row.eq(4).text(stream.restarts);
       row.eq(5).text(stream.cpu);
-      row.eq(6).text(stream.rss);
+      row.eq(6).text(stream.rss / (1024 * 1024).toFixed(4));
       var in_bps = 0;
       for(var i in stream.input_streams) {
         in_bps += stream.input_streams[i].bps;
