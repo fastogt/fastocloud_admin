@@ -289,7 +289,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                         </td>
                                         <td>{{ rev.restarts }}</td>
                                         <td>{{ rev.cpu }}</td>
-                                        <td>{{ rev.rss }}</td>
+                                        <td>{{ rev.rss / (1024 * 1024) | round(4, 'floor') }} MB</td>
                                         <td>{{ rev.input_streams|sum(attribute='bps') }}</td>
                                         <td>{{ rev.output_streams|sum(attribute='bps') }}</td>
                                         <td>{{ rev.timestamp - rev.start_time }}</td>
