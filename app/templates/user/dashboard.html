@@ -45,6 +45,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             width: 25%;
         }
 
+
 </style>
 {{super()}}
 {% endblock %}
@@ -287,10 +288,10 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                         <td>{{ rev.restarts }}</td>
                                         <td>{{ rev.cpu }}</td>
                                         <td>{{ (rev.rss / (1024 * 1024)) | round(4, 'floor') }}</td>
-                                        <td>{{ rev.input_streams|sum(attribute='bps') / (1024 * 1024 / 8) | round(4,
+                                        <td>{{ (rev.input_streams|sum(attribute='bps') / (1024 * 1024 / 8)) | round(4,
                                             'floor') }}
                                         </td>
-                                        <td>{{ rev.output_streams|sum(attribute='bps') / (1024 * 1024 / 8) | round(4,
+                                        <td>{{ (rev.output_streams|sum(attribute='bps') / (1024 * 1024 / 8))| round(4,
                                             'floor') }}
                                         </td>
                                         <td>{{ rev.timestamp - rev.start_time }}</td>
@@ -426,11 +427,11 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                         </td>
                                         <td>{{ vod.restarts }}</td>
                                         <td>{{ vod.cpu }}</td>
-                                        <td>{{ (rev.rss / (1024 * 1024)) | round(4, 'floor') }}</td>
-                                        <td>{{ vod.input_streams|sum(attribute='bps') / (1024 * 1024 / 8) | round(4,
+                                        <td>{{ (vod.rss / (1024 * 1024)) | round(4, 'floor') }}</td>
+                                        <td>{{ (vod.input_streams|sum(attribute='bps') / (1024 * 1024 / 8)) | round(4,
                                             'floor')}}
                                         </td>
-                                        <td>{{ vod.output_streams|sum(attribute='bps') / (1024 * 1024 / 8) | round(4,
+                                        <td>{{ (vod.output_streams|sum(attribute='bps') / (1024 * 1024 / 8)) | round(4,
                                             'floor') }}
                                         </td>
                                         <td>{{ vod.timestamp - vod.start_time }}</td>
@@ -526,12 +527,12 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
       for(var i in stream.input_streams) {
         in_bps += stream.input_streams[i].bps;
       }
-      row.eq(7).text(in_bps / (1024 * 1024 / 8));
+      row.eq(7).text((in_bps / (1024 * 1024 / 8)).toFixed(4));
       var out_bps = 0;
       for(var i in stream.output_streams) {
         out_bps += stream.output_streams[i].bps;
       }
-      row.eq(8).text(out_bps / (1024 * 1024 / 8));
+      row.eq(8).text((out_bps / (1024 * 1024 / 8)).toFixed(4));
       row.eq(9).text(stream.timestamp - stream.start_time);
       row.eq(10).text(stream.timestamp - stream.loop_start_time);
     });
@@ -809,6 +810,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
+
 
 
 
