@@ -74,6 +74,7 @@ app, bootstrap, babel, db, mail, login_manager, servers_manager = init_project(
     'static',
     'config/public_config.py',
     'config/config.py',
+    'config/db_config.py',
     'config/mail_config.py'
 )
 

@@ -2,16 +2,9 @@ version: '2'
 services:
     mongodb:
         image: mongo:latest
-        container_name: "mongodb"
+        container_name: mongodb
         ports:
             - 27017:27017
-    iptv:
-        image: fastogt/iptv:latest
-        container_name: iptv
-        ports:
-            - 6317:6317
-            - 8000:8000
-            - 7000:7000
     iptv_admin:
         build:
             context: ./
@@ -23,6 +16,13 @@ services:
         command: ./server.py
         ports:
             - 8080:8080
+    iptv:
+        image: fastogt/iptv:latest
+        container_name: iptv
+        ports:
+            - 6317:6317
+            - 8000:8000
+            - 7000:7000
     nginx:
         image: nginx
         container_name: nginx
