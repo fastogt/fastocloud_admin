@@ -1,6 +1,6 @@
 FROM python:3
 
-LABEL maintainer="FastoGT Maintainers <support@fastogt.com>"
+LABEL maintainer="Alexandr Topilski <support@fastogt.com>"
 
 COPY . /app
 WORKDIR /app

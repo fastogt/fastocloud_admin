@@ -5,11 +5,18 @@ services:
         container_name: "mongodb"
         ports:
             - 27017:27017
+    iptv:
+        image: fastogt/iptv:latest
+        container_name: iptv
+        ports:
+            - 6317:6317
+            - 8000:8000
+            - 7000:7000
     iptv_admin:
         build:
             context: ./
             dockerfile: Dockerfile
-        image: iptv_admin:1.0.0
+        image: iptv_admin
         container_name: iptv_admin
         depends_on:
             - mongodb
