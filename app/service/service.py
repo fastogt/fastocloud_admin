@@ -71,9 +71,6 @@ class Service(IStreamHandler):
     def get_log_service(self):
         return self._client.get_log_service(self._host, self._port, self.id)
 
-    def view_playlist(self) -> str:
-        return self._settings.generate_playlist()
-
     def ping(self):
         return self._client.ping_service()
 

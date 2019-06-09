@@ -116,6 +116,7 @@ class ServiceView(FlaskView):
             server.get_log_service()
         return redirect(url_for('UserView:dashboard'))
 
+    @login_required
     @route('/playlist/<sid>/master.m3u', methods=['GET'])
     def playlist(self, sid):
         server = ServiceSettings.objects(id=sid).first()
