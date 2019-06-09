@@ -48,15 +48,15 @@ def init_project(static_folder, *args):
     # socketio
     @socketio.on('connect')
     def connect():
-        print('Client connected')
+        pass
 
     @socketio.on('disconnect')
     def disconnect():
-        print('Client disconnected')
+        pass
 
     # defaults flask
-    _host = '127.0.0.1'
-    _port = 5000
+    _host = '0.0.0.0'
+    _port = 8080
     server_name = app.config.get('SERVER_NAME_FOR_POST')
     sn_host, sn_port = None, None
 
