@@ -78,6 +78,8 @@ class ServiceClient(IClientHandler):
             streams.append(stream.config())
 
         subscribers = []
+        for subscriber in self._service_settings.subscribers:
+            subscribers.append(subscriber.to_service())
         return self._client.sync_service(self._gen_request_id(), streams, subscribers)
 
     def get_http_host(self) -> str:

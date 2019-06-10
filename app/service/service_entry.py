@@ -20,6 +20,7 @@ class ServiceSettings(Document, ServerSettings):
 
     streams = ListField(EmbeddedDocumentField(Stream), default=[])
     users = ListField(EmbeddedDocumentField(UserPair), default=[])
+    subscribers = ListField(ReferenceField('Subscriber'), default=[])
 
     def generate_playlist(self) -> str:
         result = '#EXTM3U\n'
@@ -47,4 +48,16 @@ class ServiceSettings(Document, ServerSettings):
         for user in self.users:
             if user.id == uid:
                 self.users.remove(user)
+                break
+        self.save()
+
+    def add_subscriber(self, sid):
+        self.subscribers.append(sid)
+        self.save()
+
+    def remove_subscriber(self, sid):
+        for subscriber in self.subscribers:
+            if subscriber == sid:
+                self.subscribers.remove(subscriber)
+                break
         self.save()
