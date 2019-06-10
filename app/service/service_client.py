@@ -11,6 +11,8 @@ import app.constants as constants
 class ServiceClient(IClientHandler):
     HTTP_HOST = 'http_host'
     VODS_HOST = 'vods_host'
+    SUBSCRIBERS_HOST = 'subscribers_host'
+    BANDWIDTH_HOST = 'bandwidth_host'
     VERSION = 'version'
 
     @staticmethod
@@ -74,13 +76,21 @@ class ServiceClient(IClientHandler):
         streams = []
         for stream in self._service_settings.streams:
             streams.append(stream.config())
-        return self._client.sync_service(self._gen_request_id(), streams)
+
+        subscribers = []
+        return self._client.sync_service(self._gen_request_id(), streams, subscribers)
 
     def get_http_host(self) -> str:
         return self._http_host
 
     def get_vods_host(self) -> str:
         return self._vods_host
+
+    def get_subscribers_host(self) -> str:
+        return self._subscribers_host
+
+    def get_bandwidth_host(self) -> str:
+        return self._bandwidth_host
 
     def get_vods_in(self) -> list:
         return self._vods_in
@@ -98,7 +108,9 @@ class ServiceClient(IClientHandler):
             self.sync_service()
             if self._handler:
                 self._set_runtime_fields(resp.result[ServiceClient.HTTP_HOST],
-                                         resp.result[ServiceClient.VODS_HOST], resp.result[ServiceClient.VERSION])
+                                         resp.result[ServiceClient.VODS_HOST], resp.result[ServiceClient.VODS_HOST],
+                                         resp.result[ServiceClient.SUBSCRIBERS_HOST],
+                                         resp.result[ServiceClient.BANDWIDTH_HOST])
                 self._handler.on_service_statistic_received(resp.result)
 
         if req.method == Commands.PREPARE_SERVICE_COMMAND and resp.is_message():
@@ -127,9 +139,13 @@ class ServiceClient(IClientHandler):
             self._handler.on_client_state_changed(status)
 
     # private
-    def _set_runtime_fields(self, http_host=None, vods_host=None, version=None, vods_in=None):
+    def _set_runtime_fields(self, http_host=None, vods_host=None, subscribers_host=None, bandwidth_host=None,
+                            version=None,
+                            vods_in=None):
         self._http_host = http_host
         self._vods_host = vods_host
+        self._subscribers_host = subscribers_host
+        self._bandwidth_host = bandwidth_host
         self._version = version
         self._vods_in = vods_in
 

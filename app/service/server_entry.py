@@ -24,6 +24,10 @@ class ServerSettings:
     DEFAULT_SERVICE_HTTP_PORT = 8000
     DEFAULT_SERVICE_VODS_HOST = 'localhost'
     DEFAULT_SERVICE_VODS_PORT = 7000
+    DEFAULT_SERVICE_SUBSCRIBERS_HOST = 'localhost'
+    DEFAULT_SERVICE_SUBSCRIBERS_PORT = 6000
+    DEFAULT_SERVICE_BANDWIDTH_HOST = 'localhost'
+    DEFAULT_SERVICE_BANDWIDTH_PORT = 5000
 
     name = StringField(unique=True, default=DEFAULT_SERVICE_NAME, max_length=MAX_SERVICE_NAME_LENGTH,
                        min_length=MIN_SERVICE_NAME_LENGTH)
@@ -32,6 +36,10 @@ class ServerSettings:
                                                                        port=DEFAULT_SERVICE_HTTP_PORT))
     vods_host = EmbeddedDocumentField(HostAndPort, default=HostAndPort(host=DEFAULT_SERVICE_VODS_HOST,
                                                                        port=DEFAULT_SERVICE_VODS_PORT))
+    subscribers_host = EmbeddedDocumentField(HostAndPort, default=HostAndPort(host=DEFAULT_SERVICE_SUBSCRIBERS_HOST,
+                                                                              port=DEFAULT_SERVICE_SUBSCRIBERS_PORT))
+    bandwidth_host = EmbeddedDocumentField(HostAndPort, default=HostAndPort(host=DEFAULT_SERVICE_BANDWIDTH_HOST,
+                                                                            port=DEFAULT_SERVICE_BANDWIDTH_PORT))
 
     feedback_directory = StringField(default=DEFAULT_FEEDBACK_DIR_PATH)
     timeshifts_directory = StringField(default=DEFAULT_TIMESHIFTS_DIR_PATH)
