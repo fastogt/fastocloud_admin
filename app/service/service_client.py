@@ -1,3 +1,5 @@
+from bson.objectid import ObjectId
+
 from app.client.client import Client
 from app.client.client_handler import IClientHandler
 from app.client.json_rpc import Request, Response
@@ -27,7 +29,8 @@ class ServiceClient(IClientHandler):
     def get_pipeline_stream_path(host: str, port: int, stream_id: str):
         return constants.DEFAULT_STREAM_PIPELINE_PATH_TEMPLATE_3SIS.format(host, port, stream_id)
 
-    def __init__(self, handler: IStreamHandler, settings: ServiceSettings):
+    def __init__(self, sid: ObjectId, handler: IStreamHandler, settings: ServiceSettings):
+        self.id = sid
         self._request_id = 0
         self._handler = handler
         self._service_settings = settings
@@ -52,8 +55,9 @@ class ServiceClient(IClientHandler):
     def stop_service(self, delay: int):
         return self._client.stop_service(self._gen_request_id(), delay)
 
-    def get_log_service(self, host: str, port: int, sid: str):
-        return self._client.get_log_service(self._gen_request_id(), ServiceClient.get_log_service_path(host, port, sid))
+    def get_log_service(self, host: str, port: int):
+        return self._client.get_log_service(self._gen_request_id(),
+                                            ServiceClient.get_log_service_path(host, port, str(self.id)))
 
     def start_stream(self, config: dict):
         return self._client.start_stream(self._gen_request_id(), config)
@@ -78,8 +82,9 @@ class ServiceClient(IClientHandler):
             streams.append(stream.config())
 
         subscribers = []
-        for subscriber in self._service_settings.subscribers:
-            subscribers.append(subscriber.to_service())
+        for subs in self._service_settings.subscribers:
+            subscribers.append(subs.to_service(self.id))
+
         return self._client.sync_service(self._gen_request_id(), streams, subscribers)
 
     def get_http_host(self) -> str:

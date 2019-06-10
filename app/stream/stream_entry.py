@@ -65,6 +65,46 @@ class StreamFields:
     TIMESTAMP = 'timestamp'
 
 
+class EpgInfo:
+    ID_FIELD = 'id'
+    URL_FIELD = 'url'
+    TITLE_FIELD = 'display_name'
+    ICON_FIELD = 'icon'
+    PROGRAMS_FIELD = 'programs'
+
+    id = str
+    url = str
+    title = str
+    icon = str
+    programs = []
+
+    def __init__(self, eid: str, url: str, title: str, icon: str, programs=list()):
+        self.id = eid
+        self.url = url
+        self.title = title
+        self.icon = icon
+        self.programs = programs
+
+    def to_dict(self) -> dict:
+        return {EpgInfo.ID_FIELD: self.id, EpgInfo.URL_FIELD: self.url, EpgInfo.TITLE_FIELD: self.title,
+                EpgInfo.ICON_FIELD: self.icon, EpgInfo.PROGRAMS_FIELD: self.programs}
+
+
+class ChannelInfo:
+    EPG_FIELD = 'epg'
+    VIDEO_ENABLE_FIELD = 'video'
+    AUDIO_ENABLE_FIELD = 'audio'
+
+    def __init__(self, epg: EpgInfo, have_video=True, have_audio=True):
+        self.have_video = have_video
+        self.have_audio = have_audio
+        self.epg = epg
+
+    def to_dict(self) -> dict:
+        return {ChannelInfo.EPG_FIELD: self.epg.to_dict(), ChannelInfo.VIDEO_ENABLE_FIELD: self.have_video,
+                ChannelInfo.AUDIO_ENABLE_FIELD: self.have_audio}
+
+
 class Stream(EmbeddedDocument):
     meta = {'allow_inheritance': True, 'auto_create_index': True}
 
@@ -158,6 +198,13 @@ class Stream(EmbeddedDocument):
         if audio_select != constants.INVALID_AUDIO_SELECT:
             conf[AUDIO_SELECT_FIELD] = audio_select
         return conf
+
+    def to_channel_info(self) -> [ChannelInfo]:
+        ch = []
+        for out in self.output.urls:
+            epg = EpgInfo(self.get_id(), out.uri, self.name, self.icon)
+            ch.append(ChannelInfo(epg))
+        return ch
 
     def generate_feedback_dir(self):
         return '{0}/{1}/{2}'.format(self._settings.feedback_directory, self.get_type(), self.get_id())

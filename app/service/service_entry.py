@@ -61,3 +61,10 @@ class ServiceSettings(Document, ServerSettings):
                 self.subscribers.remove(subscriber)
                 break
         self.save()
+
+    def find_stream_settings_by_id(self, sid):
+        for stream in self.streams:
+            if stream.id == sid:
+                return stream
+
+        return None

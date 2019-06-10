@@ -167,10 +167,9 @@ class ServiceView(FlaskView):
             server = ServiceSettings.objects(id=sid).first()
             if server:
                 new_entry = form.make_entry()
-                new_entry.save()
-
-                server.add_subscriber(new_entry.id)
                 new_entry.add_server(server)
+
+                server.add_subscriber(new_entry)
                 return jsonify(status='ok'), 200
 
         return render_template('service/subscriber/add.html', form=form)

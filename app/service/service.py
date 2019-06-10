@@ -54,7 +54,7 @@ class Service(IStreamHandler):
         self._settings = settings
         self.__reload_from_db()
         # other fields
-        self._client = ServiceClient(self, settings)
+        self._client = ServiceClient(settings.id, self, settings)
         self._host = host
         self._port = port
         self._socketio = socketio
@@ -69,7 +69,7 @@ class Service(IStreamHandler):
         return self._client.stop_service(delay)
 
     def get_log_service(self):
-        return self._client.get_log_service(self._host, self._port, self.id)
+        return self._client.get_log_service(self._host, self._port)
 
     def ping(self):
         return self._client.ping_service()

@@ -7,7 +7,6 @@ from mongoengine import Document, EmbeddedDocument, StringField, DateTimeField, 
     PULL, ObjectIdField
 
 from app.service.service_entry import ServiceSettings
-from app.stream.stream_entry import Stream
 
 
 class Device(EmbeddedDocument):
@@ -29,7 +28,7 @@ class Subscriber(Document):
     PASSWORD_FIELD = "password"
     STATUS_FIELD = "status"
     DEVICES_FIELD = "devices"
-    STREAMS_FIELD = "streams"
+    STREAMS_FIELD = "channels"
 
     class Status(IntEnum):
         NO_ACTIVE = 0
@@ -51,38 +50,46 @@ class Subscriber(Document):
     type = IntField(default=Type.USER)
     country = StringField(min_length=2, max_length=3, required=True)
     servers = ListField(ReferenceField(ServiceSettings, reverse_delete_rule=PULL), default=[])
-    devices = ListField(Device, default=[])
-    streams = ListField(ReferenceField(Stream, reverse_delete_rule=PULL), default=[])
+    devices = ListField(Device(), default=[])
+    streams = ListField(ObjectIdField(), default=[])
 
     def add_server(self, server: ServiceSettings):
         self.servers.append(server)
         self.save()
 
-    def add_stream(self, sid):
-        self.streams.append(sid)
+    def add_stream(self, stream):
+        self.streams.append(stream.id)
         self.save()
 
-    def remove_stream(self, sid):
+    def remove_stream(self, sid: ObjectId):
         for stream in self.streams:
             if stream == sid:
                 self.streams.remove(stream)
                 break
         self.save()
 
-    def to_service(self) -> dict:
-        devices = []
-        for dev in self.devices:
-            devices.append(str(dev.id))
+    def to_service(self, sid: ObjectId) -> dict:
+        for serv in self.servers:
+            if serv.id == sid:
+                devices = []
+                for dev in self.devices:
+                    devices.append(str(dev.id))
 
-        streams = []
-        for stream in self.streams:
-            streams.append(str(stream))
+                streams = []
+                for stream in self.streams:
+                    founded_stream = serv.find_stream_settings_by_id(stream)
+                    if founded_stream:
+                        channels = founded_stream.to_channel_info()
+                        for ch in channels:
+                            streams.append(ch.to_dict())
 
-        conf = {
-            Subscriber.ID_FIELD: str(self.id), Subscriber.EMAIL_FIELD: self.email,
-            Subscriber.PASSWORD_FIELD: self.password, Subscriber.STATUS_FIELD: self.status,
-            Subscriber.DEVICES_FIELD: devices, Subscriber.STREAMS_FIELD: streams}
-        return conf
+                conf = {
+                    Subscriber.ID_FIELD: str(self.id), Subscriber.EMAIL_FIELD: self.email,
+                    Subscriber.PASSWORD_FIELD: self.password, Subscriber.STATUS_FIELD: self.status,
+                    Subscriber.DEVICES_FIELD: devices, Subscriber.STREAMS_FIELD: streams}
+                return conf
+
+        return {}
 
     @staticmethod
     def make_md5_hash_from_password(password: str) -> str:
