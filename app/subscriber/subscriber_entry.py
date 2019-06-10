@@ -4,7 +4,7 @@ from bson.objectid import ObjectId
 from enum import IntEnum
 
 from mongoengine import Document, EmbeddedDocument, StringField, DateTimeField, IntField, ListField, ReferenceField, \
-    PULL, ObjectIdField
+    PULL, ObjectIdField, EmbeddedDocumentField
 
 from app.service.service_entry import ServiceSettings
 
@@ -50,7 +50,7 @@ class Subscriber(Document):
     type = IntField(default=Type.USER)
     country = StringField(min_length=2, max_length=3, required=True)
     servers = ListField(ReferenceField(ServiceSettings, reverse_delete_rule=PULL), default=[])
-    devices = ListField(Device(), default=[])
+    devices = ListField(EmbeddedDocumentField(Device), default=[])
     streams = ListField(ObjectIdField(), default=[])
 
     def add_server(self, server: ServiceSettings):
