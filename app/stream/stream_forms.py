@@ -5,12 +5,12 @@ from wtforms.validators import InputRequired, Length, NumberRange
 from wtforms.fields import StringField, SubmitField, SelectField, IntegerField, FormField, BooleanField, FloatField
 
 import app.constants as constants
-from app.stream.stream_entry import Stream, RelayStream, EncodeStream, TimeshiftRecorderStream, CatchupStream, \
-    TimeshiftPlayerStream, TestLifeStream, VodRelayStream, VodEncodeStream
+from app.stream.stream_entry import ProxyStream, HardwareStream, RelayStream, EncodeStream, TimeshiftRecorderStream, \
+    CatchupStream, TimeshiftPlayerStream, TestLifeStream, VodRelayStream, VodEncodeStream
 from app.common_forms import InputUrlsForm, OutputUrlsForm, SizeForm, LogoForm, RationalForm
 
 
-class StreamForm(FlaskForm):
+class IStreamForm(FlaskForm):
     name = StringField(lazy_gettext(u'Name:'),
                        validators=[InputRequired(),
                                    Length(min=constants.MIN_STREAM_NAME_LENGTH, max=constants.MAX_STREAM_NAME_LENGTH)])
@@ -18,8 +18,24 @@ class StreamForm(FlaskForm):
                        validators=[InputRequired(), Length(min=constants.MIN_URL_LENGTH, max=constants.MAX_URL_LENGTH)])
     group = StringField(lazy_gettext(u'Group:'),
                         validators=[Length(min=constants.MIN_STREAM_GROUP_TITLE, max=constants.MAX_STREAM_GROUP_TITLE)])
-    input = FormField(InputUrlsForm, lazy_gettext(u'Input:'))
     output = FormField(OutputUrlsForm, lazy_gettext(u'Output:'))
+    submit = SubmitField(lazy_gettext(u'Confirm'))
+
+
+class ProxyStreamForm(IStreamForm):
+    def make_entry(self):
+        return self.update_entry(ProxyStream())
+
+    def update_entry(self, entry: ProxyStream):
+        entry.name = self.name.data
+        entry.icon = self.icon.data
+        entry.group = self.group.data
+        entry.output = self.output.get_data()
+        return entry
+
+
+class HardwareStreamForm(IStreamForm):
+    input = FormField(InputUrlsForm, lazy_gettext(u'Input:'))
     log_level = SelectField(lazy_gettext(u'Log level:'), validators=[],
                             choices=constants.AVAILABLE_LOG_LEVELS_PAIRS, coerce=constants.StreamLogLevel.coerce)
     audio_select = IntegerField(lazy_gettext(u'Audio select:'),
@@ -31,15 +47,12 @@ class StreamForm(FlaskForm):
     restart_attempts = IntegerField(lazy_gettext(u'Max restart attempts and frozen:'),
                                     validators=[NumberRange(1, 1000)])
     auto_exit_time = IntegerField(lazy_gettext(u'Auto exit time:'), validators=[])
-    submit = SubmitField(lazy_gettext(u'Confirm'))
 
     def make_entry(self):
-        return self.update_entry(Stream())
+        return self.update_entry(HardwareStream())
 
-    def update_entry(self, entry: Stream):
-        entry.name = self.name.data
+    def update_entry(self, entry: HardwareStream):
         entry.input = self.input.get_data()
-        entry.output = self.output.get_data()
 
         entry.audio_select = self.audio_select.data
         entry.have_video = self.have_video.data
@@ -52,7 +65,7 @@ class StreamForm(FlaskForm):
         return entry
 
 
-class RelayStreamForm(StreamForm):
+class RelayStreamForm(HardwareStreamForm):
     video_parser = SelectField(lazy_gettext(u'Video parser:'), validators=[],
                                choices=constants.AVAILABLE_VIDEO_PARSERS)
     audio_parser = SelectField(lazy_gettext(u'Audio parser:'), validators=[],
@@ -67,7 +80,7 @@ class RelayStreamForm(StreamForm):
         return super(RelayStreamForm, self).update_entry(entry)
 
 
-class EncodeStreamForm(StreamForm):
+class EncodeStreamForm(HardwareStreamForm):
     relay_video = BooleanField(lazy_gettext(u'Relay video:'), validators=[])
     relay_audio = BooleanField(lazy_gettext(u'Relay audio:'), validators=[])
     deinterlace = BooleanField(lazy_gettext(u'Deinterlace:'), validators=[])

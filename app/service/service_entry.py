@@ -3,7 +3,7 @@ from mongoengine import Document, ListField, EmbeddedDocumentField, ReferenceFie
 import app.constants as constants
 
 from app.service.server_entry import ServerSettings
-from app.stream.stream_entry import Stream
+from app.stream.stream_entry import IStream
 
 
 # #EXTM3U
@@ -18,7 +18,7 @@ class UserPair(EmbeddedDocument):
 class ServiceSettings(Document, ServerSettings):
     meta = {'collection': 'services', 'auto_create_index': False}
 
-    streams = ListField(EmbeddedDocumentField(Stream), default=[])
+    streams = ListField(EmbeddedDocumentField(IStream), default=[])
     users = ListField(EmbeddedDocumentField(UserPair), default=[])
     subscribers = ListField(ReferenceField('Subscriber'), default=[])
 

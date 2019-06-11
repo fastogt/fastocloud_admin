@@ -44,6 +44,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
         th.stream_actions {
             width: 26%;
         }
+
 </style>
 {{super()}}
 {% endblock %}
@@ -246,6 +247,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#streams" data-toggle="tab">Streams</a></li>
                         <li><a href="#vods" data-toggle="tab">Vods</a></li>
+                        <li><a href="#proxy" data-toggle="tab">Proxy</a></li>
                     </ul>
                 </div>
                 <div class="panel-body">
@@ -271,12 +273,13 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                     </thead>
                                     <tbody>
                                     {% for rev in streams %}
-                                    {% if (rev.type != 6 and rev.type != 7) %}
+                                    {% if (rev.type != 7 and rev.type != 8 and rev.type != 0) %}
                                     <tr id='{{ rev.id }}'>
                                         <td>{{ loop.index }}</td>
                                         <td>{{ rev.name }}</td>
                                         <td>
-                                            {{ ['RELAY', 'ENCODE', 'TIMESHIFT_PLAYER', 'TIMESHIFT_RECORDER', 'CATCHUP',
+                                            {{ ['PROXY','RELAY', 'ENCODE', 'TIMESHIFT_PLAYER', 'TIMESHIFT_RECORDER',
+                                            'CATCHUP',
                                             'TEST_LIFE',
                                             'VOD_RELAY', 'VOD_ENCODE'][rev.type] }}
                                         </td>
@@ -411,12 +414,13 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                     </thead>
                                     <tbody>
                                     {% for vod in streams %}
-                                    {% if (vod.type == 6 or vod.type == 7) %}
+                                    {% if (vod.type == 7 or vod.type == 8) %}
                                     <tr id='{{ vod.id }}'>
                                         <td>{{ loop.index }}</td>
                                         <td>{{ vod.name }}</td>
                                         <td>
-                                            {{ ['RELAY', 'ENCODE', 'TIMESHIFT_PLAYER', 'TIMESHIFT_RECORDER', 'CATCHUP',
+                                            {{ ['PROXY','RELAY', 'ENCODE', 'TIMESHIFT_PLAYER', 'TIMESHIFT_RECORDER',
+                                            'CATCHUP',
                                             'TEST_LIFE',
                                             'VOD_RELAY', 'VOD_ENCODE'][vod.type] }}
                                         </td>
@@ -479,6 +483,51 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                 </button>
                                 <button class="btn btn-info btn-send col-md-6" onclick="add_vod_encode_stream()">
                                     {% trans %}Add vod encode{% endtrans %}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="proxy">
+                            <div class="row">
+                                <table id='proxy_table' class="table">
+                                    <thead>
+                                    <tr>
+                                        <th class="stream_number">#</th>
+                                        <th class="stream_name">{% trans %}Name{% endtrans %}</th>
+                                        <th class="stream_type">{% trans %}Type{% endtrans %}</th>
+                                        <th class="stream_actions">{% trans %}Actions{% endtrans %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for proxy in streams %}
+                                    {% if (proxy.type == 0) %}
+                                    <tr id='{{ proxy.id }}'>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ proxy.name }}</td>
+                                        <td>
+                                            {{ ['PROXY','RELAY', 'ENCODE', 'TIMESHIFT_PLAYER', 'TIMESHIFT_RECORDER',
+                                            'CATCHUP',
+                                            'TEST_LIFE',
+                                            'VOD_RELAY', 'VOD_ENCODE'][proxy.type] }}
+                                        </td>
+                                        <td>
+                                            <button type="submit" class="btn btn-success btn-xs"
+                                                    onclick="edit_stream('{{ proxy.id }}')">
+                                                {% trans %}Edit{% endtrans %}
+                                            </button>
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="remove_stream('{{ proxy.id }}')">
+                                                {% trans %}Remove{% endtrans %}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <button class="btn btn-warning btn-send col-md-12" onclick="add_proxy_stream()">
+                                    {% trans %}Add proxy{% endtrans %}
                                 </button>
                             </div>
                         </div>
@@ -701,6 +750,18 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             })
         });
     }
+    function add_proxy_stream() {
+        var url = "{{ url_for('StreamView:add_proxy') }}";
+        $.get(url, function(data) {
+            $('#stream_dialog .modal-content').html(data);
+            $('#stream_dialog').modal();
+
+            $('#submit').click(function(event) {
+                event.preventDefault();
+                add_stream_entry(url);
+            })
+        });
+    }
     function edit_stream(sid) {
         var url = "/stream/edit/" + sid;
         $.get(url, function(data) {
@@ -809,5 +870,6 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
+
 </script>
 {% endblock %}

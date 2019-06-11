@@ -55,7 +55,8 @@ class ActivateForm(FlaskForm):
 
 
 class UploadM3uForm(FlaskForm):
-    AVAILABLE_STREAM_TYPES_FOR_UPLOAD = [(constants.StreamType.RELAY, 'Relay'), (constants.StreamType.ENCODE, 'Encode'),
+    AVAILABLE_STREAM_TYPES_FOR_UPLOAD = [(constants.StreamType.PROXY, 'Proxy'), (constants.StreamType.RELAY, 'Relay'),
+                                         (constants.StreamType.ENCODE, 'Encode'),
                                          (constants.StreamType.CATCHUP, 'Catchup'),
                                          (constants.StreamType.TEST_LIFE, 'Test life'),
                                          (constants.StreamType.VOD_RELAY, 'Vod relay'),

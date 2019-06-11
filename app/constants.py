@@ -2,14 +2,15 @@ from enum import IntEnum
 
 
 class StreamType(IntEnum):
-    RELAY = 0
-    ENCODE = 1
-    TIMESHIFT_PLAYER = 2
-    TIMESHIFT_RECORDER = 3
-    CATCHUP = 4
-    TEST_LIFE = 5,
-    VOD_RELAY = 6,
-    VOD_ENCODE = 7
+    PROXY = 0,
+    RELAY = 1
+    ENCODE = 2
+    TIMESHIFT_PLAYER = 3
+    TIMESHIFT_RECORDER = 4
+    CATCHUP = 5
+    TEST_LIFE = 6,
+    VOD_RELAY = 7,
+    VOD_ENCODE = 8
 
     @classmethod
     def choices(cls):
@@ -69,11 +70,6 @@ DEFAULT_LOCALE = 'en'
 AVAILABLE_LOCALES = DEFAULT_LOCALE, 'ru'
 AVAILABLE_LOCALES_PAIRS = [(DEFAULT_LOCALE, 'English'), ('ru', 'Russian')]
 
-AVAILABLE_STREAM_TYPES_PAIRS = [(StreamType.RELAY, 'relay'), (StreamType.ENCODE, 'encode'),
-                                (StreamType.TIMESHIFT_PLAYER, 'timeshift_player'),
-                                (StreamType.TIMESHIFT_RECORDER, 'timeshift_record'), (StreamType.CATCHUP, 'catchup'),
-                                (StreamType.TEST_LIFE, 'test_life'), (StreamType.VOD_RELAY, 'vod_relay'),
-                                (StreamType.VOD_ENCODE, 'vod_encode')]
 AVAILABLE_LOG_LEVELS_PAIRS = [(StreamLogLevel.LOG_LEVEL_EMERG, 'EVERG'), (StreamLogLevel.LOG_LEVEL_ALERT, 'ALERT'),
                               (StreamLogLevel.LOG_LEVEL_CRIT, 'CRITICAL'),
                               (StreamLogLevel.LOG_LEVEL_ERR, 'ERROR'),

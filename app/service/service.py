@@ -1,9 +1,8 @@
 from bson.objectid import ObjectId
 
-from app.stream.stream_entry import Stream, EncodeStream, RelayStream, TimeshiftRecorderStream, CatchupStream, \
-    TimeshiftPlayerStream, TestLifeStream, make_encode_stream, make_relay_stream, make_timeshift_recorder_stream, \
-    make_catchup_stream, make_timeshift_player_stream, make_test_life_stream, make_vod_encode_stream, \
-    make_vod_relay_stream
+from app.stream.stream_entry import IStream, ProxyStream, EncodeStream, RelayStream, TimeshiftRecorderStream, \
+    CatchupStream, \
+    TimeshiftPlayerStream, TestLifeStream, VodRelayStream, VodEncodeStream
 from app.client.client_constants import ClientStatus
 
 from app.service.service_entry import ServiceSettings
@@ -216,29 +215,32 @@ class Service(IStreamHandler):
                 ServiceFields.VERSION: self.version, ServiceFields.UPTIME: self._uptime,
                 ServiceFields.TIMESTAMP: self._timestamp, ServiceFields.STATUS: self.status}
 
-    def make_relay_stream(self) -> RelayStream:
-        return make_relay_stream(self._settings)
+    def make_proxy_stream(self) -> ProxyStream:
+        return ProxyStream.make_stream(self._settings)
 
-    def make_vod_relay_stream(self) -> RelayStream:
-        return make_vod_relay_stream(self._settings)
+    def make_relay_stream(self) -> RelayStream:
+        return RelayStream.make_stream(self._settings)
+
+    def make_vod_relay_stream(self) -> VodRelayStream:
+        return VodRelayStream.make_stream(self._settings)
 
     def make_encode_stream(self) -> EncodeStream:
-        return make_encode_stream(self._settings)
+        return EncodeStream.make_stream(self._settings)
 
     def make_vod_encode_stream(self) -> EncodeStream:
-        return make_vod_encode_stream(self._settings)
+        return VodEncodeStream.make_stream(self._settings)
 
     def make_timeshift_recorder_stream(self) -> TimeshiftRecorderStream:
-        return make_timeshift_recorder_stream(self._settings)
+        return TimeshiftRecorderStream.make_stream(self._settings)
 
     def make_catchup_stream(self) -> CatchupStream:
-        return make_catchup_stream(self._settings)
+        return CatchupStream.make_stream(self._settings)
 
     def make_timeshift_player_stream(self) -> TimeshiftPlayerStream:
-        return make_timeshift_player_stream(self._settings)
+        return TimeshiftPlayerStream.make_stream(self._settings)
 
     def make_test_life_stream(self) -> TestLifeStream:
-        return make_test_life_stream(self._settings)
+        return TestLifeStream.make_stream(self._settings)
 
     # handler
     def on_stream_statistic_received(self, params: dict):
@@ -303,7 +305,7 @@ class Service(IStreamHandler):
         self._uptime = stats[ServiceFields.UPTIME]
         self._timestamp = stats[ServiceFields.TIMESTAMP]
 
-    def __init_stream_runtime_fields(self, stream: Stream):
+    def __init_stream_runtime_fields(self, stream: IStream):
         stream.set_server_settings(self._settings)
 
     def __reload_from_db(self):

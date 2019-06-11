@@ -6,8 +6,8 @@ from flask_login import login_required, current_user
 
 import app.constants as constants
 from app import get_runtime_stream_folder
-from app.stream.stream_forms import EncodeStreamForm, RelayStreamForm, TimeshiftRecorderStreamForm, CatchupStreamForm, \
-    TimeshiftPlayerStreamForm, TestLifeStreamForm, VodEncodeStreamForm, VodRelayStreamForm
+from app.stream.stream_forms import ProxyStreamForm, EncodeStreamForm, RelayStreamForm, TimeshiftRecorderStreamForm, \
+    CatchupStreamForm, TimeshiftPlayerStreamForm, TestLifeStreamForm, VodEncodeStreamForm, VodRelayStreamForm
 
 
 # routes
@@ -99,6 +99,21 @@ class StreamView(FlaskView):
             return '''<pre>Not found, please use get pipeline button firstly.</pre>'''
 
     # broadcast routes
+
+    @login_required
+    @route('/add/proxy', methods=['GET', 'POST'])
+    def add_proxy(self):
+        server = current_user.get_current_server()
+        if server:
+            stream = server.make_relay_stream()
+            form = ProxyStreamForm(obj=stream)
+            if request.method == 'POST' and form.validate_on_submit():
+                new_entry = form.make_entry()
+                server.add_stream(new_entry)
+                return jsonify(status='ok'), 200
+
+            return render_template('stream/proxy/add.html', form=form, feedback_dir=stream.generate_feedback_dir())
+        return jsonify(status='failed'), 404
 
     @login_required
     @route('/add/relay', methods=['GET', 'POST'])
@@ -234,7 +249,16 @@ class StreamView(FlaskView):
             stream = server.find_stream_by_id(sid)
             if stream:
                 type = stream.get_type()
-                if type == constants.StreamType.RELAY:
+                if type == constants.StreamType.PROXY:
+                    form = ProxyStreamForm(obj=stream)
+
+                    if request.method == 'POST' and form.validate_on_submit():
+                        stream = form.update_entry(stream)
+                        server.update_stream(stream)
+                        return jsonify(status='ok'), 200
+
+                    return render_template('stream/proxy/edit.html', form=form)
+                elif type == constants.StreamType.RELAY:
                     form = RelayStreamForm(obj=stream)
 
                     if request.method == 'POST' and form.validate_on_submit():

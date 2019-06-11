@@ -105,22 +105,66 @@ class ChannelInfo:
                 ChannelInfo.AUDIO_ENABLE_FIELD: self.have_audio}
 
 
-class Stream(EmbeddedDocument):
+class IStream(EmbeddedDocument):
     meta = {'allow_inheritance': True, 'auto_create_index': True}
 
     id = ObjectIdField(required=True, default=ObjectId,
-                       unique=True, primary_key=True)
+                       unique=True, primary_key=True)  #
     name = StringField(default=constants.DEFAULT_STREAM_NAME, max_length=constants.MAX_STREAM_NAME_LENGTH,
-                       min_length=constants.MIN_STREAM_NAME_LENGTH, required=True)
+                       min_length=constants.MIN_STREAM_NAME_LENGTH, required=True)  #
     icon = StringField(default=constants.DEFAULT_STREAM_ICON_URL, max_length=constants.MAX_URL_LENGTH,
-                       min_length=constants.MIN_URL_LENGTH, required=True)
+                       min_length=constants.MIN_URL_LENGTH, required=True)  #
     group = StringField(default=constants.DEFAULT_STREAM_GROUP_TITLE, min_length=constants.MIN_STREAM_GROUP_TITLE,
                         max_length=constants.MAX_STREAM_GROUP_TITLE, required=False)
     created_date = DateTimeField(default=datetime.now)  # for inner use
+    output = EmbeddedDocumentField(OutputUrls, default=OutputUrls())  #
+
+    _settings = ServerSettings()
+
+    def __init__(self, *args, **kwargs):
+        super(IStream, self).__init__(*args, **kwargs)
+
+    def set_server_settings(self, settings: ServerSettings):
+        self._settings = settings
+
+    def get_type(self):
+        raise NotImplementedError('subclasses must override get_type()!')
+
+    def get_id(self) -> str:
+        return str(self.id)
+
+    def to_channel_info(self) -> [ChannelInfo]:
+        ch = []
+        for out in self.output.urls:
+            epg = EpgInfo(self.get_id(), out.uri, self.name, self.icon)
+            ch.append(ChannelInfo(epg))
+        return ch
+
+    def to_front(self) -> dict:
+        return {StreamFields.NAME: self.name, StreamFields.ID: self.get_id(), StreamFields.TYPE: self.get_type()}
+
+    def fixup_output_urls(self):
+        return
+
+
+class ProxyStream(IStream):
+    def __init__(self, *args, **kwargs):
+        super(ProxyStream, self).__init__(*args, **kwargs)
+
+    def get_type(self):
+        return constants.StreamType.PROXY
+
+    @classmethod
+    def make_stream(cls, settings: ServerSettings):
+        stream = cls()
+        stream._settings = settings
+        return stream
+
+
+class HardwareStream(IStream):
     log_level = IntField(default=constants.StreamLogLevel.LOG_LEVEL_INFO, required=True)
 
     input = EmbeddedDocumentField(InputUrls, default=InputUrls())
-    output = EmbeddedDocumentField(OutputUrls, default=OutputUrls())
     have_video = BooleanField(default=constants.DEFAULT_HAVE_VIDEO, required=True)
     have_audio = BooleanField(default=constants.DEFAULT_HAVE_AUDIO, required=True)
     audio_select = IntField(default=constants.INVALID_AUDIO_SELECT, required=True)
@@ -139,13 +183,12 @@ class Stream(EmbeddedDocument):
     _start_time = 0
     _input_streams = str()
     _output_streams = str()
-    _settings = ServerSettings()
 
     def __init__(self, *args, **kwargs):
-        super(Stream, self).__init__(*args, **kwargs)
+        super(HardwareStream, self).__init__(*args, **kwargs)
 
-    def set_server_settings(self, settings: ServerSettings):
-        self._settings = settings
+    def get_type(self):
+        raise NotImplementedError('subclasses must override get_type()!')
 
     def reset(self):
         self._status = constants.StreamStatus.NEW
@@ -172,11 +215,17 @@ class Stream(EmbeddedDocument):
         self._output_streams = params[StreamFields.OUTPUT_STREAMS]
 
     def to_front(self) -> dict:
-        return {StreamFields.NAME: self.name, StreamFields.ID: self.get_id(), StreamFields.TYPE: self.get_type(),
-                StreamFields.STATUS: self._status, StreamFields.CPU: self._cpu, StreamFields.TIMESTAMP: self._timestamp,
-                StreamFields.RSS: self._rss, StreamFields.LOOP_START_TIME: self._loop_start_time,
-                StreamFields.RESTARTS: self._restarts, StreamFields.START_TIME: self._start_time,
-                StreamFields.INPUT_STREAMS: self._input_streams, StreamFields.OUTPUT_STREAMS: self._output_streams}
+        front = super(HardwareStream, self).to_front()
+        front[StreamFields.STATUS] = self._status
+        front[StreamFields.CPU] = self._cpu
+        front[StreamFields.TIMESTAMP] = self._timestamp
+        front[StreamFields.RSS] = self._rss
+        front[StreamFields.LOOP_START_TIME] = self._loop_start_time
+        front[StreamFields.RESTARTS] = self._restarts
+        front[StreamFields.START_TIME] = self._start_time
+        front[StreamFields.INPUT_STREAMS] = self._input_streams
+        front[StreamFields.OUTPUT_STREAMS] = self._output_streams
+        return front
 
     def config(self) -> dict:
         conf = {
@@ -198,13 +247,6 @@ class Stream(EmbeddedDocument):
         if audio_select != constants.INVALID_AUDIO_SELECT:
             conf[AUDIO_SELECT_FIELD] = audio_select
         return conf
-
-    def to_channel_info(self) -> [ChannelInfo]:
-        ch = []
-        for out in self.output.urls:
-            epg = EpgInfo(self.get_id(), out.uri, self.name, self.icon)
-            ch.append(ChannelInfo(epg))
-        return ch
 
     def generate_feedback_dir(self):
         return '{0}/{1}/{2}'.format(self._settings.feedback_directory, self.get_type(), self.get_id())
@@ -233,12 +275,6 @@ class Stream(EmbeddedDocument):
     def get_have_audio(self):
         return self.have_audio
 
-    def get_id(self) -> str:
-        return str(self.id)
-
-    def get_type(self):
-        raise NotImplementedError('subclasses must override get_type()!')
-
     def get_loop(self):
         return self.loop
 
@@ -250,9 +286,6 @@ class Stream(EmbeddedDocument):
 
     def get_auto_exit_time(self):
         return self.auto_exit_time
-
-    def fixup_output_urls(self):
-        return
 
     # private
     def _generate_http_root_dir(self, oid: int):
@@ -284,10 +317,9 @@ class Stream(EmbeddedDocument):
                 self.output.urls[idx] = self.generate_vod_link(filename)
 
 
-class RelayStream(Stream):
+class RelayStream(HardwareStream):
     def __init__(self, *args, **kwargs):
         super(RelayStream, self).__init__(*args, **kwargs)
-        # super(RelayStream, self).type = constants.StreamType.RELAY
 
     video_parser = StringField(default=constants.DEFAULT_VIDEO_PARSER, required=True)
     audio_parser = StringField(default=constants.DEFAULT_AUDIO_PARSER, required=True)
@@ -310,8 +342,16 @@ class RelayStream(Stream):
     def fixup_output_urls(self):
         return self._fixup_http_output_urls()
 
+    @classmethod
+    def make_stream(cls, settings: ServerSettings):
+        stream = cls()
+        stream._settings = settings
+        stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
+        stream.output = OutputUrls(urls=[OutputUrl(id=OutputUrl.generate_id())])
+        return stream
 
-class EncodeStream(Stream):
+
+class EncodeStream(HardwareStream):
     def __init__(self, *args, **kwargs):
         super(EncodeStream, self).__init__(*args, **kwargs)
 
@@ -395,6 +435,14 @@ class EncodeStream(Stream):
     def fixup_output_urls(self):
         return self._fixup_http_output_urls()
 
+    @classmethod
+    def make_stream(cls, settings: ServerSettings):
+        stream = cls()
+        stream._settings = settings
+        stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
+        stream.output = OutputUrls(urls=[OutputUrl(id=OutputUrl.generate_id())])
+        return stream
+
 
 class TimeshiftRecorderStream(RelayStream):
     def __init__(self, *args, **kwargs):
@@ -422,6 +470,13 @@ class TimeshiftRecorderStream(RelayStream):
     def fixup_output_urls(self):
         return
 
+    @classmethod
+    def make_stream(cls, settings: ServerSettings):
+        stream = cls()
+        stream._settings = settings
+        stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
+        return stream
+
 
 class CatchupStream(TimeshiftRecorderStream):
     def __init__(self, *args, **kwargs):
@@ -431,6 +486,13 @@ class CatchupStream(TimeshiftRecorderStream):
 
     def get_type(self):
         return constants.StreamType.CATCHUP
+
+    @classmethod
+    def make_stream(cls, settings: ServerSettings):
+        stream = cls()
+        stream._settings = settings
+        stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
+        return stream
 
 
 class TimeshiftPlayerStream(RelayStream):
@@ -449,6 +511,14 @@ class TimeshiftPlayerStream(RelayStream):
         conf[TIMESHIFT_DELAY] = self.timeshift_delay
         return conf
 
+    @classmethod
+    def make_stream(cls, settings: ServerSettings):
+        stream = cls()
+        stream._settings = settings
+        stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
+        stream.output = OutputUrls(urls=[OutputUrl(id=OutputUrl.generate_id())])
+        return stream
+
 
 class TestLifeStream(RelayStream):
     def __init__(self, *args, **kwargs):
@@ -463,6 +533,14 @@ class TestLifeStream(RelayStream):
 
     def fixup_output_urls(self):
         return
+
+    @classmethod
+    def make_stream(cls, settings: ServerSettings):
+        stream = cls()
+        stream._settings = settings
+        stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
+        stream.output = OutputUrls(urls=[OutputUrl(id=OutputUrl.generate_id(), uri=constants.DEFAULT_TEST_URL)])
+        return stream
 
 
 class VodRelayStream(RelayStream):
@@ -481,6 +559,14 @@ class VodRelayStream(RelayStream):
     def fixup_output_urls(self):
         return self._fixup_vod_output_urls()
 
+    @classmethod
+    def make_stream(cls, settings: ServerSettings):
+        stream = cls()
+        stream._settings = settings
+        stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
+        stream.output = OutputUrls(urls=[OutputUrl(id=OutputUrl.generate_id())])
+        return stream
+
 
 class VodEncodeStream(EncodeStream):
     def __init__(self, *args, **kwargs):
@@ -498,66 +584,10 @@ class VodEncodeStream(EncodeStream):
     def fixup_output_urls(self):
         return self._fixup_vod_output_urls()
 
-
-def make_relay_stream(settings: ServerSettings) -> RelayStream:
-    stream = RelayStream()
-    stream._settings = settings
-    stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
-    stream.output = OutputUrls(urls=[OutputUrl(id=OutputUrl.generate_id())])
-    return stream
-
-
-# loop false, input file, output vod folder hls
-def make_vod_relay_stream(settings: ServerSettings) -> VodRelayStream:
-    stream = VodRelayStream()
-    stream._settings = settings
-    stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
-    stream.output = OutputUrls(urls=[OutputUrl(id=OutputUrl.generate_id())])
-    return stream
-
-
-def make_encode_stream(settings: ServerSettings) -> EncodeStream:
-    stream = EncodeStream()
-    stream._settings = settings
-    stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
-    stream.output = OutputUrls(urls=[OutputUrl(id=OutputUrl.generate_id())])
-    return stream
-
-
-# loop false, input file, output vod folder hls
-def make_vod_encode_stream(settings: ServerSettings) -> VodEncodeStream:
-    stream = VodEncodeStream()
-    stream._settings = settings
-    stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
-    stream.output = OutputUrls(urls=[OutputUrl(id=OutputUrl.generate_id())])
-    return stream
-
-
-def make_timeshift_recorder_stream(settings: ServerSettings) -> TimeshiftRecorderStream:
-    stream = TimeshiftRecorderStream()
-    stream._settings = settings
-    stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
-    return stream
-
-
-def make_catchup_stream(settings: ServerSettings) -> CatchupStream:
-    stream = CatchupStream()
-    stream._settings = settings
-    stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
-    return stream
-
-
-def make_timeshift_player_stream(settings: ServerSettings) -> TimeshiftPlayerStream:
-    stream = TimeshiftPlayerStream()
-    stream._settings = settings
-    stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
-    stream.output = OutputUrls(urls=[OutputUrl(id=OutputUrl.generate_id())])
-    return stream
-
-
-def make_test_life_stream(settings: ServerSettings) -> TestLifeStream:
-    stream = TestLifeStream()
-    stream._settings = settings
-    stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
-    stream.output = OutputUrls(urls=[OutputUrl(id=OutputUrl.generate_id(), uri=constants.DEFAULT_TEST_URL)])
-    return stream
+    @classmethod
+    def make_stream(cls, settings: ServerSettings):
+        stream = cls()
+        stream._settings = settings
+        stream.input = InputUrls(urls=[InputUrl(id=InputUrl.generate_id())])
+        stream.output = OutputUrls(urls=[OutputUrl(id=OutputUrl.generate_id())])
+        return stream

@@ -6,7 +6,7 @@ from mongoengine import connect
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from app.stream.stream_entry import make_test_life_stream
+from app.stream.stream_entry import TestLifeStream
 from app.service.service import ServiceSettings
 from app.utils.m3u_parser import M3uParser
 
@@ -26,7 +26,7 @@ if __name__ == '__main__':
         m3u_parser.read_m3u(argv.uri)
         m3u_parser.parse()
         for file in m3u_parser.files:
-            stream = make_test_life_stream(service_settings.feedback_directory)
+            stream = TestLifeStream.make_stream(service_settings)
             stream.input.urls[0].uri = file['link']
             stream.name = '{0}({1})'.format(file['tvg-group'], file['title'])
             service_settings.streams.append(stream)

@@ -36,33 +36,7 @@
         <br>
         {{ render_bootstrap_field(form.group) }}
         <br>
-        {{ render_bootstrap_field(form.audio_select) }}
-        <br>
-        {{ render_bootstrap_field(form.have_video) }}
-        <br>
-        {{ render_bootstrap_field(form.have_audio) }}
-        <br>
-        {{ render_bootstrap_field(form.avformat) }}
-        <br>
-        {{ render_bootstrap_field(form.restart_attempts) }}
-        <br>
-        {{ render_bootstrap_field(form.video_parser) }}
-        <br>
-        {{ render_bootstrap_field(form.audio_parser) }}
-        <br>
-        {{ render_bootstrap_form(form.input) }}
-        <br>
         {{ render_bootstrap_form(form.output) }}
-        <br>
-        <div class="row">
-            <label class="col-md-4">Logs directory:</label>
-            <div class="col-md-8">
-                <input class="form-control" id="feedback_dir" name="feedback_dir" value="{{ feedback_dir }}" readonly
-                       type="text">
-            </div>
-        </div>
-        <br>
-        {{ render_bootstrap_field(form.log_level) }}
     </div>
     <div class="modal-footer">
         {% block footer %}

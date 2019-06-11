@@ -37,7 +37,9 @@ class ServiceView(FlaskView):
             m3u_parser.parse()
 
             for file in m3u_parser.files:
-                if stream_type == constants.StreamType.RELAY:
+                if stream_type == constants.StreamType.PROXY:
+                    stream = server.make_proxy_stream()
+                elif stream_type == constants.StreamType.RELAY:
                     stream = server.make_relay_stream()
                     stream.output.urls[0] = stream.generate_http_link()
                 elif stream_type == constants.StreamType.ENCODE:
