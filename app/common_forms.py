@@ -1,6 +1,6 @@
 from wtforms import Form
 from flask_babel import lazy_gettext
-from wtforms.fields import StringField, FieldList, IntegerField, FormField, FloatField
+from wtforms.fields import StringField, FieldList, IntegerField, FormField, FloatField, SelectField
 from wtforms.validators import InputRequired, Length, NumberRange
 
 import app.constants as constants
@@ -16,7 +16,9 @@ class UrlForm(Form):
 
 
 class InputUrlForm(UrlForm):
-    pass
+    user_agent = SelectField(lazy_gettext(u'User agent:'),
+                             validators=[InputRequired()],
+                             choices=constants.AVAILABLE_USER_AGENTS, coerce=constants.UserAgent.coerce)
 
 
 class InputUrlsForm(Form):
@@ -25,7 +27,7 @@ class InputUrlsForm(Form):
     def get_data(self) -> InputUrls:
         urls = InputUrls()
         for url in self.data['urls']:
-            urls.urls.append(InputUrl(url['id'], url['uri']))
+            urls.urls.append(InputUrl(url['id'], url['uri'], url['user_agent']))
 
         return urls
 

@@ -588,11 +588,12 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
     }
 
     function edit_stream_entry(url) {
+        var data_ser = $('#stream_entry_form').serialize();
         $.ajax({
             url: url,
             type: "POST",
             dataType: 'json',
-            data: $('#stream_entry_form').serialize(),
+            data: data_ser,
             success: function (response) {
                 console.log(response);
                 $('#stream_dialog').modal('hide');
@@ -808,12 +809,5 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
-
-
-
-
-
-
-
 </script>
 {% endblock %}
