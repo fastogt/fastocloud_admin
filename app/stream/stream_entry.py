@@ -256,6 +256,13 @@ class HardwareStream(IStream):
             conf[AUDIO_SELECT_FIELD] = audio_select
         return conf
 
+    def to_channel_info(self) -> [ChannelInfo]:
+        ch = []
+        for out in self.output.urls:
+            epg = EpgInfo(self.get_id(), out.uri, self.name, self.icon)
+            ch.append(ChannelInfo(epg))
+        return ch
+
     def generate_feedback_dir(self):
         return '{0}/{1}/{2}'.format(self._settings.feedback_directory, self.get_type(), self.get_id())
 
