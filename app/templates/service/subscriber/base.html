@@ -17,7 +17,7 @@
 </div>
 {% endmacro %}
 
-<form id="service_entry_form" name="service_entry_form" class="form" method="post">
+<form id="subscriber_entry_form" name="subscriber_entry_form" class="form" method="post">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="close">
             <span aria-hidden="true">&times;</span>
@@ -30,33 +30,11 @@
     <div class="modal-body">
         {{ form.hidden_tag() }}
         <br>
-        {{ render_bootstrap_field(form.name) }}
+        {{ render_bootstrap_field(form.email) }}
         <br>
-        {{ render_bootstrap_form(form.host) }}
+        {{ render_bootstrap_field(form.password) }}
         <br>
-        {{ render_bootstrap_form(form.http_host) }}
-        <br>
-        {{ render_bootstrap_form(form.vods_host) }}
-        <br>
-        {{ render_bootstrap_form(form.subscribers_host) }}
-        <br>
-        {{ render_bootstrap_form(form.bandwidth_host) }}
-        <br>
-        {{ render_bootstrap_field(form.feedback_directory) }}
-        <br>
-        {{ render_bootstrap_field(form.timeshifts_directory) }}
-        <br>
-        {{ render_bootstrap_field(form.hls_directory) }}
-        <br>
-        {{ render_bootstrap_field(form.playlists_directory) }}
-        <br>
-        {{ render_bootstrap_field(form.dvb_directory) }}
-        <br>
-        {{ render_bootstrap_field(form.capture_card_directory) }}
-        <br>
-        {{ render_bootstrap_field(form.vods_in_directory) }}
-        <br>
-        {{ render_bootstrap_field(form.vods_directory) }}
+        {{ render_bootstrap_field(form.country) }}
     </div>
     <div class="modal-footer">
         {% block footer %}

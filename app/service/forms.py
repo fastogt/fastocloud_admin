@@ -13,6 +13,8 @@ class ServiceSettingsForm(FlaskForm):
     host = FormField(HostAndPortForm, lazy_gettext(u'Host:'), validators=[])
     http_host = FormField(HostAndPortForm, lazy_gettext(u'Http host:'), validators=[])
     vods_host = FormField(HostAndPortForm, lazy_gettext(u'Vods host:'), validators=[])
+    subscribers_host = FormField(HostAndPortForm, lazy_gettext(u'Subscribers host:'), validators=[])
+    bandwidth_host = FormField(HostAndPortForm, lazy_gettext(u'Bandwidth host:'), validators=[])
 
     feedback_directory = StringField(lazy_gettext(u'Feedback directory:'), validators=[InputRequired()])
     timeshifts_directory = StringField(lazy_gettext(u'Timeshifts directory:'), validators=[InputRequired()])
@@ -32,6 +34,8 @@ class ServiceSettingsForm(FlaskForm):
         settings.host = self.host.get_data()
         settings.http_host = self.http_host.get_data()
         settings.vods_host = self.vods_host.get_data()
+        settings.subscribers_host = self.subscribers_host.get_data()
+        settings.bandwidth_host = self.bandwidth_host.get_data()
 
         settings.feedback_directory = self.feedback_directory.data
         settings.timeshifts_directory = self.timeshifts_directory.data

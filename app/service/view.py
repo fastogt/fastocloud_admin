@@ -6,9 +6,11 @@ from flask_login import login_required, current_user
 
 from app import get_runtime_folder
 from app.service.forms import ServiceSettingsForm, ActivateForm, UploadM3uForm, UserServerForm
+from app.subscriber.forms import SubscriberForm
 from app.service.service_entry import ServiceSettings, UserPair
 from app.utils.m3u_parser import M3uParser
 from app.home.user_loging_manager import User
+from app.subscriber.subscriber_entry import Subscriber
 import app.constants as constants
 
 
@@ -158,10 +160,24 @@ class ServiceView(FlaskView):
         return render_template('service/user/add.html', form=form)
 
     @login_required
+    @route('/subscriber/add/<sid>', methods=['GET', 'POST'])
+    def subscriber_add(self, sid):
+        form = SubscriberForm(obj=Subscriber())
+        if request.method == 'POST' and form.validate_on_submit():
+            server = ServiceSettings.objects(id=sid).first()
+            if server:
+                new_entry = form.make_entry()
+                new_entry.add_server(server)
+
+                server.add_subscriber(new_entry)
+                return jsonify(status='ok'), 200
+
+        return render_template('service/subscriber/add.html', form=form)
+
+    @login_required
     @route('/add', methods=['GET', 'POST'])
     def add(self):
-        model = ServiceSettings()
-        form = ServiceSettingsForm(obj=model)
+        form = ServiceSettingsForm(obj=ServiceSettings())
         if request.method == 'POST' and form.validate_on_submit():
             new_entry = form.make_entry()
             admin = UserPair(current_user.id, constants.Roles.ADMIN)

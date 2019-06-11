@@ -74,6 +74,10 @@ Settings | {{ config['PUBLIC_CONFIG'].site.title }}
                                         onclick="add_user_to_server('{{ server.id }}')">
                                     {% trans %}Add user{% endtrans %}
                                 </button>
+                                <button type="submit" class="btn btn-success btn-xs"
+                                        onclick="add_subscriber_to_server('{{ server.id }}')">
+                                    {% trans %}Add subscriber{% endtrans %}
+                                </button>
                                 <button type="submit" class="btn btn-danger btn-xs"
                                         onclick="remove_server('{{ server.id }}')">
                                     {% trans %}Remove{% endtrans %}
@@ -155,6 +159,37 @@ Settings | {{ config['PUBLIC_CONFIG'].site.title }}
     }
 
 
+    function add_subscriber_to_server_entry(url) {
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: 'json',
+            data: $('#subscriber_entry_form').serialize(),
+            success: function (response) {
+                console.log(response);
+                $('#service_dialog').modal('hide');
+                window.location.reload();
+            },
+            error: function (error) {
+                console.error(error);
+                $('#service_dialog .modal-content').html(data);
+            }
+        });
+    }
+
+    function add_subscriber_to_server(sid) {
+        var url = "/service/subscriber/add/" + sid;
+        $.get(url, function(data) {
+            $('#service_dialog .modal-content').html(data);
+            $('#service_dialog').modal();
+
+            $('#apply').click(function(event) {
+                event.preventDefault();
+                add_subscriber_to_server_entry(url);
+            })
+        });
+    }
+
     function add_server() {
         var url = "{{ url_for('ServiceView:add') }}";
         $.get(url, function(data) {
@@ -214,8 +249,6 @@ Settings | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
-
-
 
 </script>
 {% endblock %}

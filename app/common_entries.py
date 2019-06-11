@@ -19,7 +19,7 @@ class Url(EmbeddedDocument):
 
 
 class InputUrl(Url):
-    pass
+    user_agent = IntField(default=constants.UserAgent.GSTREAMER, required=True)
 
 
 class OutputUrl(Url):

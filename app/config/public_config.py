@@ -3,4 +3,4 @@ PUBLIC_CONFIG = {'site': {'title': 'FastoCloud', 'keywords': 'video,cloud,iptv,s
                  'support': {'contact_email': 'support@fastogt.com',
                              'contact_address': 'Republic of Belarus, Minsk, Stadionnay str. 5',
                              'community_channel': 'https://discord.gg/cnUXsws'},
-                 'project': {'version': '1.1.0', 'version_type': 'release'}}
+                 'project': {'version': '1.2.0', 'version_type': 'release'}}

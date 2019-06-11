@@ -44,6 +44,7 @@ class Client:
     VODS_IN_DIRECTORY = 'vods_in_directory'
     VODS_DIRECTORY = 'vods_directory'
     STREAMS = 'streams'
+    SUBSCRIBERS = 'subscribers'
     STREAM_ID = 'id'
     LICENSE_KEY = 'license_key'
     PATH = 'path'
@@ -126,8 +127,8 @@ class Client:
         self._send_request(command_id, Commands.PREPARE_SERVICE_COMMAND, command_args)
 
     @is_active_decorator
-    def sync_service(self, command_id: int, streams: list):
-        command_args = {Client.STREAMS: streams}
+    def sync_service(self, command_id: int, streams: list, subscribers: list):
+        command_args = {Client.STREAMS: streams, Client.SUBSCRIBERS: subscribers}
         self._send_request(command_id, Commands.SYNC_SERVICE_COMMAND, command_args)
 
     @is_active_decorator
