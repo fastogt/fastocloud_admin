@@ -143,7 +143,19 @@ class IStream(EmbeddedDocument):
     def to_front(self) -> dict:
         return {StreamFields.NAME: self.name, StreamFields.ID: self.get_id(), StreamFields.TYPE: self.get_type()}
 
+    def config(self) -> dict:
+        conf = {
+            ID_FIELD: self.get_id(),  # required
+            TYPE_FIELD: self.get_type(),  # required
+            OUTPUT_FIELD: self.output.to_mongo()  # required empty in timeshift_record
+        }
+
+        return conf
+
     def fixup_output_urls(self):
+        return
+
+    def reset(self):
         return
 
 
@@ -228,20 +240,16 @@ class HardwareStream(IStream):
         return front
 
     def config(self) -> dict:
-        conf = {
-            ID_FIELD: self.get_id(),  # required
-            TYPE_FIELD: self.get_type(),  # required
-            FEEDBACK_DIR_FIELD: self.generate_feedback_dir(),  # required
-            LOG_LEVEL_FIELD: self.get_log_level(),
-            AUTO_EXIT_TIME_FIELD: self.get_auto_exit_time(),
-            LOOP_FIELD: self.get_loop(),
-            AVFORMAT_FIELD: self.get_avformat(),
-            HAVE_VIDEO_FIELD: self.get_have_video(),  # required
-            HAVE_AUDIO_FIELD: self.get_have_audio(),  # required
-            RESTART_ATTEMPTS_FIELD: self.get_restart_attempts(),
-            INPUT_FIELD: self.input.to_mongo(),  # required empty in timeshift_player
-            OUTPUT_FIELD: self.output.to_mongo()  # required empty in timeshift_record
-        }
+        conf = super(HardwareStream, self).config()
+        conf[FEEDBACK_DIR_FIELD] = self.generate_feedback_dir()
+        conf[LOG_LEVEL_FIELD] = self.get_log_level()
+        conf[AUTO_EXIT_TIME_FIELD] = self.get_auto_exit_time()
+        conf[LOOP_FIELD] = self.get_loop()
+        conf[AVFORMAT_FIELD] = self.get_avformat(),
+        conf[HAVE_VIDEO_FIELD] = self.get_have_video(),  # required
+        conf[HAVE_AUDIO_FIELD] = self.get_have_audio(),  # required
+        conf[RESTART_ATTEMPTS_FIELD] = self.get_restart_attempts(),
+        conf[INPUT_FIELD] = self.input.to_mongo(),  # required empty in timeshift_player
 
         audio_select = self.get_audio_select()
         if audio_select != constants.INVALID_AUDIO_SELECT:
