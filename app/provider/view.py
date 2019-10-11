@@ -17,7 +17,7 @@ class ProviderView(FlaskView):
             streams = server.get_streams()
             front_streams = []
             for stream in streams:
-                front_streams.append(stream.to_front())
+                front_streams.append(stream.to_dict())
             role = server.get_user_role_by_id(current_user.id)
             return render_template('provider/dashboard.html', streams=front_streams, service=server,
                                    servers=current_user.servers, role=role)

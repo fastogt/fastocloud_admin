@@ -246,7 +246,7 @@ class Service(IStreamHandler):
                 self._settings.streams.remove(stream)
                 break
 
-    def to_front(self) -> dict:
+    def to_dict(self) -> dict:
         return {ServiceFields.ID: str(self.id), ServiceFields.CPU: self._cpu, ServiceFields.GPU: self._gpu,
                 ServiceFields.LOAD_AVERAGE: self._load_average, ServiceFields.MEMORY_TOTAL: self._memory_total,
                 ServiceFields.MEMORY_FREE: self._memory_free, ServiceFields.HDD_TOTAL: self._hdd_total,
@@ -295,7 +295,7 @@ class Service(IStreamHandler):
         stream = self.find_stream_by_id(sid)
         if stream:
             stream.update_runtime_fields(params)
-            self.__notify_front(Service.STREAM_DATA_CHANGED, stream.to_front())
+            self.__notify_front(Service.STREAM_DATA_CHANGED, stream.to_dict())
 
     def on_stream_sources_changed(self, params: dict):
         pass
@@ -303,14 +303,14 @@ class Service(IStreamHandler):
     def on_service_statistic_received(self, params: dict):
         # nid = params['id']
         self.__refresh_stats(params)
-        self.__notify_front(Service.SERVICE_DATA_CHANGED, self.to_front())
+        self.__notify_front(Service.SERVICE_DATA_CHANGED, self.to_dict())
 
     def on_quit_status_stream(self, params: dict):
         sid = params['id']
         stream = self.find_stream_by_id(sid)
         if stream:
             stream.reset()
-            self.__notify_front(Service.STREAM_DATA_CHANGED, stream.to_front())
+            self.__notify_front(Service.STREAM_DATA_CHANGED, stream.to_dict())
 
     def on_client_state_changed(self, status: ClientStatus):
         if status == ClientStatus.ACTIVE:
