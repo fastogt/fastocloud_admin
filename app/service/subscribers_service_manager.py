@@ -241,8 +241,8 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
             client.check_login_fail(cid, 'User not active')
             return False
 
-        channels = client.info.get_streams()
-        return client.get_channels_success(cid, channels)
+        channels, vods = client.info.get_streams()
+        return client.get_channels_success(cid, channels, vods)
 
     def _handle_get_runtime_channel_info(self, client, cid: str, params: dict) -> bool:
         if not check_is_auth_client(client):
