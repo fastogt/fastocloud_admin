@@ -4,4 +4,4 @@ PUBLIC_CONFIG = {'site': {'title': 'FastoCloud', 'keywords': 'video,cloud,iptv,s
                              'contact_address': 'Republic of Belarus, Minsk, Stadionnay str. 5',
                              'community_channel': 'https://discord.gg/cnUXsws',
                              'partners':[]},
-                 'project': {'version': '1.7.0', 'version_type': 'release'}}
+                 'project': {'version': '1.0.0', 'version_type': 'release'}}
