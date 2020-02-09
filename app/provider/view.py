@@ -24,10 +24,9 @@ class ProviderView(FlaskView):
             for stream in streams:
                 front = stream.to_dict()
                 type = stream.get_type()
-                if type == constants.StreamType.PROXY:
+                if type == constants.StreamType.PROXY or type == constants.StreamType.VOD_PROXY:
                     proxy.append(front)
-                elif type == constants.StreamType.VOD_PROXY or type == constants.StreamType.VOD_RELAY or \
-                        type == constants.StreamType.VOD_ENCODE:
+                elif type == constants.StreamType.VOD_RELAY or type == constants.StreamType.VOD_ENCODE:
                     vods.append(front)
                 elif type == constants.StreamType.COD_RELAY or type == constants.StreamType.COD_ENCODE:
                     cods.append(front)
