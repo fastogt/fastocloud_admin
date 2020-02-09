@@ -289,6 +289,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                         <li><a href="#vods" data-toggle="tab">Video on demand</a></li>
                         <li><a href="#cods" data-toggle="tab">Channel on demand</a></li>
                         <li><a href="#proxy" data-toggle="tab">Proxy</a></li>
+                        <li><a href="#catchups" data-toggle="tab">Catchups</a></li>
                         <li><a href="#events" data-toggle="tab">Events (Pay per view)</a></li>
                         <li><a href="#series" data-toggle="tab">Series</a></li>
                     </ul>
@@ -318,7 +319,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                     </thead>
                                     <tbody>
                                     {% for rev in streams %}
-                                    {% if (rev.type != 8 and rev.type != 9 and rev.type != 10 and rev.type != 11 and
+                                    {% if (rev.type != 6 and rev.type != 8 and rev.type != 9 and rev.type != 10 and rev.type != 11 and
                                     rev.type != 0 and rev.type != 1) %}
                                     <tr id='{{ rev.id }}'>
                                         <td>{{ loop.index }}</td>
@@ -437,9 +438,6 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                 <button class="btn btn-success btn-send col-md-2"
                                         onclick="add_timeshift_recorder_stream()">
                                     Add timeshift recorder
-                                </button>
-                                <button class="btn btn-success btn-send col-md-2" onclick="add_catchup_stream()">
-                                    Add catchup
                                 </button>
                                 <button class="btn btn-success btn-send col-md-2"
                                         onclick="add_timeshift_player_stream()">
@@ -771,6 +769,62 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                 </button>
                                 <button class="btn btn-warning btn-send col-md-4" onclick="add_proxy_omdb_vod()">
                                     Add proxy omdb vod
+                                </button>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="catchups">
+                            <div class="row">
+                                <table id='catchups_table' class="table">
+                                    <thead>
+                                    <tr>
+                                        <th class="stream_number">#</th>
+                                        <th class="stream_name">Name</th>
+                                        <th class="stream_type">Type</th>
+                                        <th class="stream_price">Price ($)</th>
+                                        <th class="stream_actions">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for catchup in streams %}
+                                    {% if (catchup.type == 6) %}
+                                    <tr id='{{ catchup.id }}'>
+                                        <td>{{ loop.index }}</td>
+                                        <td>
+                                            <img width="32px" height="32px" src="{{catchup.icon}}"/>
+                                            {{ catchup.name }}
+                                        </td>
+                                        <td>
+                                            {{ ['PROXY','VOD_PROXY','RELAY', 'ENCODE', 'TIMESHIFT_PLAYER',
+                                            'TIMESHIFT_RECORDER',
+                                            'CATCHUP',
+                                            'TEST_LIFE',
+                                            'VOD_RELAY', 'VOD_ENCODE','COD_RELAY', 'COD_ENCODE', 'EVENT'][catchup.type] }}
+                                        </td>
+                                        <td>{{ catchup.price }}</td>
+                                        <td>
+                                            <a href="{{ url_for('StreamView:play', sid=catchup.id) }}"
+                                               class="btn btn-info btn-xs"
+                                               role="button">
+                                                Play
+                                            </a>
+                                            <button type="submit" class="btn btn-success btn-xs"
+                                                    onclick="edit_stream('{{ catchup.id }}')">
+                                                Edit
+                                            </button>
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="remove_stream('{{ catchup.id }}')">
+                                                Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <button class="btn btn-warning btn-send col-md-4" onclick="add_catchup_stream()">
+                                    Add catchup
                                 </button>
                             </div>
                         </div>
