@@ -3,6 +3,7 @@ from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
 
 from pyfastocloud_models.service.entry import ServiceSettings
+import pyfastocloud_models.constants as constants
 
 
 # routes
@@ -14,11 +15,32 @@ class ProviderView(FlaskView):
         server = current_user.get_current_server()
         if server:
             streams = server.get_streams()
-            front_streams = []
+            streams_relay_encoder_timeshifts = []
+            vods = []
+            cods = []
+            proxy = []
+            catchups = []
+            events = []
             for stream in streams:
-                front_streams.append(stream.to_dict())
+                front = stream.to_dict()
+                type = stream.get_type()
+                if type == constants.StreamType.PROXY:
+                    proxy.append(front)
+                elif type == constants.StreamType.VOD_PROXY or type == constants.StreamType.VOD_RELAY or \
+                        type == constants.StreamType.VOD_ENCODE:
+                    vods.append(front)
+                elif type == constants.StreamType.COD_RELAY or type == constants.StreamType.COD_ENCODE:
+                    cods.append(front)
+                elif type == constants.StreamType.CATCHUP:
+                    catchups.append(front)
+                elif type == constants.StreamType.EVENT:
+                    events.append(front)
+                else:
+                    streams_relay_encoder_timeshifts.append(front)
+
             role = server.get_user_role_by_id(current_user.id)
-            return render_template('provider/dashboard.html', streams=front_streams, service=server,
+            return render_template('provider/dashboard.html', streams=streams_relay_encoder_timeshifts, vods=vods,
+                                   cods=cods, proxies=proxy, catchups=catchups, events=events, service=server,
                                    servers=current_user.servers, role=role)
 
         return redirect(url_for('ProviderView:settings'))

@@ -53,6 +53,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
 
 
 
+
 </style>
 {{super()}}
 {% endblock %}
@@ -319,8 +320,6 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                     </thead>
                                     <tbody>
                                     {% for rev in streams %}
-                                    {% if (rev.type != 6 and rev.type != 8 and rev.type != 9 and rev.type != 10 and rev.type != 11 and
-                                    rev.type != 0 and rev.type != 1) %}
                                     <tr id='{{ rev.id }}'>
                                         <td>{{ loop.index }}</td>
                                         <td>
@@ -423,7 +422,6 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                             {% endif %}
                                         </td>
                                     </tr>
-                                    {% endif %}
                                     {% endfor %}
                                     </tbody>
                                 </table>
@@ -470,8 +468,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for vod in streams %}
-                                    {% if (vod.type == 8 or vod.type == 9) %}
+                                    {% for vod in vods %}
                                     <tr id='{{ vod.id }}'>
                                         <td>{{ loop.index }}</td>
                                         <td>
@@ -556,7 +553,6 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                             </button>
                                         </td>
                                     </tr>
-                                    {% endif %}
                                     {% endfor %}
                                     </tbody>
                                 </table>
@@ -592,8 +588,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for cod in streams %}
-                                    {% if (cod.type == 10 or cod.type == 11) %}
+                                    {% for cod in cods %}
                                     <tr id='{{ cod.id }}'>
                                         <td>{{ loop.index }}</td>
                                         <td>
@@ -696,7 +691,6 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                             {% endif %}
                                         </td>
                                     </tr>
-                                    {% endif %}
                                     {% endfor %}
                                     </tbody>
                                 </table>
@@ -723,8 +717,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for proxy in streams %}
-                                    {% if (proxy.type == 0 or proxy.type == 1) %}
+                                    {% for proxy in proxies %}
                                     <tr id='{{ proxy.id }}'>
                                         <td>{{ loop.index }}</td>
                                         <td>
@@ -755,7 +748,6 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                             </button>
                                         </td>
                                     </tr>
-                                    {% endif %}
                                     {% endfor %}
                                     </tbody>
                                 </table>
@@ -785,8 +777,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for catchup in streams %}
-                                    {% if (catchup.type == 6) %}
+                                    {% for catchup in catchups %}
                                     <tr id='{{ catchup.id }}'>
                                         <td>{{ loop.index }}</td>
                                         <td>
@@ -798,7 +789,8 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                             'TIMESHIFT_RECORDER',
                                             'CATCHUP',
                                             'TEST_LIFE',
-                                            'VOD_RELAY', 'VOD_ENCODE','COD_RELAY', 'COD_ENCODE', 'EVENT'][catchup.type] }}
+                                            'VOD_RELAY', 'VOD_ENCODE','COD_RELAY', 'COD_ENCODE', 'EVENT'][catchup.type]
+                                            }}
                                         </td>
                                         <td>{{ catchup.price }}</td>
                                         <td>
@@ -815,9 +807,38 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                                     onclick="remove_stream('{{ catchup.id }}')">
                                                 Remove
                                             </button>
+                                            {% if (role == 2) %}
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="get_log_stream('{{ catchup.id }}')">
+                                                Get log
+                                            </button>
+                                            <a href="{{ url_for('StreamView:view_log', sid=catchup.id) }}"
+                                               class="btn btn-info btn-xs"
+                                               role="button">
+                                                View log
+                                            </a>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="get_pipeline_stream('{{ catchup.id }}')">
+                                                GPL
+                                            </button>
+                                            <a href="{{ url_for('StreamView:view_pipeline', sid=catchup.id) }}"
+                                               class="btn btn-info btn-xs"
+                                               role="button">
+                                                VPL
+                                            </a>
+                                            {% endif %}
                                         </td>
                                     </tr>
-                                    {% endif %}
                                     {% endfor %}
                                     </tbody>
                                 </table>
@@ -850,8 +871,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for event in streams %}
-                                    {% if (event.type == 12) %}
+                                    {% for event in events %}
                                     <tr id='{{ event.id }}'>
                                         <td>{{ loop.index }}</td>
                                         <td>
@@ -955,7 +975,6 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                             {% endif %}
                                         </td>
                                     </tr>
-                                    {% endif %}
                                     {% endfor %}
                                     </tbody>
                                 </table>
@@ -1471,6 +1490,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
+
 
 
 </script>
