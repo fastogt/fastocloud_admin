@@ -73,6 +73,8 @@ class ServiceView(FlaskView):
                                                                          oid=stream.output.urls[0].id)
                     elif stream_type == constants.StreamType.CATCHUP:
                         stream = server.make_catchup_stream()
+                        stream.output.urls[0] = stream.generate_http_link(constants.HlsType.HLS_PULL,
+                                                                          oid=stream.output.urls[0].id)
                     else:
                         stream = server.make_test_life_stream()
 

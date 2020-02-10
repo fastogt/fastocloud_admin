@@ -108,7 +108,8 @@ class ServiceClient(IClientHandler):
         streams = []
         for stream in settings.streams:
             stream.set_server_settings(settings)
-            streams.append(stream.config())
+            config = stream.config()
+            streams.append(config)
 
         return self._client.sync_service(self._gen_request_id(), streams)
 

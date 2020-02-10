@@ -41,7 +41,6 @@ class ServiceManager(object):
 
             readable, writeable, _ = select.select(rsockets, [], [], 1)
             for read in readable:
-
                 for server in self._servers_pool:
                     if server.socket() == read:
                         server.recv_data()

@@ -6,6 +6,7 @@ from pyfastocloud_models.stream.entry import IStream, ProxyStream, EncodeStream,
 from pyfastocloud.client_constants import ClientStatus
 
 from pyfastocloud_models.series.entry import Serial
+import pyfastocloud_models.constants as constants
 from pyfastocloud_models.service.entry import ServiceSettings, ProviderPair, safe_delete_stream
 from app.service.service_client import ServiceClient, OperationSystem
 from app.service.stream_handler import IStreamHandler
@@ -109,7 +110,9 @@ class Service(IStreamHandler):
         settings = self._settings
         if prepare:
             self._client.prepare_service(settings)
-        return self._client.sync_service(settings)
+        res = self._client.sync_service(settings)
+        self.__refresh_catchups()
+        return res
 
     def get_log_stream(self, sid: str):
         stream = self.find_stream_by_id(sid)
@@ -401,3 +404,9 @@ class Service(IStreamHandler):
         for stream in streams:
             self.__init_stream_runtime_fields(stream)
             self._streams.append(stream)
+
+    def __refresh_catchups(self):
+        for stream in self._streams:
+            if stream.get_type() == constants.StreamType.CATCHUP:
+                self._client.start_stream(stream.config())
+                return

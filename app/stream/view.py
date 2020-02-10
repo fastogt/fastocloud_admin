@@ -269,7 +269,7 @@ class StreamView(FlaskView):
         if server:
             stream = server.make_catchup_stream()
             form = CatchupStreamForm(obj=stream)
-            if request.method == 'POST':  # FIXME form.validate_on_submit()
+            if request.method == 'POST' and form.validate_on_submit():
                 new_entry = form.update_entry(stream)
                 new_entry.save()
                 server.add_stream(new_entry)
