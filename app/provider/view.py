@@ -21,6 +21,7 @@ class ProviderView(FlaskView):
             proxy = []
             catchups = []
             events = []
+            tests = []
             for stream in streams:
                 front = stream.to_dict()
                 type = stream.get_type()
@@ -34,13 +35,15 @@ class ProviderView(FlaskView):
                     catchups.append(front)
                 elif type == constants.StreamType.EVENT:
                     events.append(front)
+                elif type == constants.StreamType.TEST_LIFE:
+                    tests.append(front)
                 else:
                     streams_relay_encoder_timeshifts.append(front)
 
             role = server.get_user_role_by_id(current_user.id)
             return render_template('provider/dashboard.html', streams=streams_relay_encoder_timeshifts, vods=vods,
-                                   cods=cods, proxies=proxy, catchups=catchups, events=events, service=server,
-                                   servers=current_user.servers, role=role)
+                                   cods=cods, proxies=proxy, catchups=catchups, events=events, tests=tests,
+                                   service=server, servers=current_user.servers, role=role)
 
         return redirect(url_for('ProviderView:settings'))
 

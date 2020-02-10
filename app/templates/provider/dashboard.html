@@ -54,6 +54,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
 
 
 
+
 </style>
 {{super()}}
 {% endblock %}
@@ -293,6 +294,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                         <li><a href="#catchups" data-toggle="tab">Catchups</a></li>
                         <li><a href="#events" data-toggle="tab">Events (Pay per view)</a></li>
                         <li><a href="#series" data-toggle="tab">Series</a></li>
+                        <li><a href="#tests" data-toggle="tab">Tests</a></li>
                     </ul>
                 </div>
                 <div class="panel-body">
@@ -427,22 +429,19 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                 </table>
                             </div>
                             <div class="row">
-                                <button class="btn btn-success btn-send col-md-2" onclick="add_relay_stream()">
+                                <button class="btn btn-success btn-send col-md-3" onclick="add_relay_stream()">
                                     Add relay
                                 </button>
-                                <button class="btn btn-success btn-send col-md-2" onclick="add_encode_stream()">
+                                <button class="btn btn-success btn-send col-md-3" onclick="add_encode_stream()">
                                     Add encode
                                 </button>
-                                <button class="btn btn-success btn-send col-md-2"
+                                <button class="btn btn-success btn-send col-md-3"
                                         onclick="add_timeshift_recorder_stream()">
                                     Add timeshift recorder
                                 </button>
-                                <button class="btn btn-success btn-send col-md-2"
+                                <button class="btn btn-success btn-send col-md-3"
                                         onclick="add_timeshift_player_stream()">
                                     Add timeshift player
-                                </button>
-                                <button class="btn btn-success btn-send col-md-2" onclick="add_test_life_stream()">
-                                    Add test life
                                 </button>
                             </div>
                         </div>
@@ -992,6 +991,142 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                 </button>
                             </div>
                         </div>
+                        <div class="tab-pane fade in active" id="tests">
+                            <div class="row">
+                                <table id='tests_table' class="table">
+                                    <thead>
+                                    <tr>
+                                        <th class="stream_number">#</th>
+                                        <th class="stream_name">Name</th>
+                                        <th class="stream_type">Type</th>
+                                        <th class="stream_status">Status</th>
+                                        <th class="stream_restarts">Restarts</th>
+                                        <th class="stream_cpu">CPU (%)</th>
+                                        <th class="stream_rss">RSS (MB)</th>
+                                        <th class="stream_inbps">In (Mbps)</th>
+                                        <th class="stream_outbps">Out (Mbps)</th>
+                                        <th class="stream_work_time">TTL (sec)</th>
+                                        <th class="stream_live_time">RTL (sec)</th>
+                                        <th class="stream_quality">Quality (%)</th>
+                                        <th class="stream_price">Price ($)</th>
+                                        <th class="stream_actions">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for test in tests %}
+                                    <tr id='{{ test.id }}'>
+                                        <td>{{ loop.index }}</td>
+                                        <td>
+                                            <img width="32px" height="32px" src="{{test.icon}}"/>
+                                            {{ test.name }}
+                                        </td>
+                                        <td>
+                                            {{ ['PROXY','VOD_PROXY','RELAY', 'ENCODE', 'TIMESHIFT_PLAYER',
+                                            'TIMESHIFT_RECORDER',
+                                            'CATCHUP', 'TEST_LIFE', 'VOD_RELAY', 'VOD_ENCODE', 'COD_RELAY',
+                                            'COD_ENCODE', 'EVENT'][test.type] }}
+                                        </td>
+                                        <td>{{ ['NEW', 'INIT', 'STARTED', 'READY', 'PLAYING', 'FROZEN',
+                                            'WAITING'][test.status] }}
+                                        </td>
+                                        <td>{{ test.restarts }}</td>
+                                        <td>{{ test.cpu | round(2, 'floor') }}</td>
+                                        <td>{{ (test.rss / (1024 * 1024)) | round(4, 'floor') }}</td>
+                                        <td>{{ (test.input_streams|sum(attribute='bps') / (1024 * 1024 / 8)) | round(4,
+                                            'floor') }}
+                                        </td>
+                                        <td>{{ (test.output_streams|sum(attribute='bps') / (1024 * 1024 / 8))| round(4,
+                                            'floor') }}
+                                        </td>
+                                        <td>{{ (test.timestamp - test.start_time)/1000 }}</td>
+                                        <td>{{ (test.timestamp - test.loop_start_time)/1000 }}</td>
+                                        <td>{{ test.quality | round(2, 'floor') }}
+                                        </td>
+                                        <td>{{ test.price }}</td>
+                                        <td>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="start_stream(this, '{{ test.id }}')">
+                                                Start
+                                            </button>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="stop_stream(this, '{{ test.id }}')">
+                                                Stop
+                                            </button>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="restart_stream(this, '{{ test.id }}')">
+                                                Restart
+                                            </button>
+                                            <a href="{{ url_for('StreamView:play', sid=test.id) }}"
+                                               class="btn btn-info btn-xs"
+                                               role="button">
+                                                Play
+                                            </a>
+                                            <button type="submit" class="btn btn-success btn-xs"
+                                                    onclick="edit_stream('{{ test.id }}')">
+                                                Edit
+                                            </button>
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="remove_stream('{{ test.id }}')">
+                                                Remove
+                                            </button>
+                                            {% if (role == 2) %}
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="get_log_stream('{{ test.id }}')">
+                                                Get log
+                                            </button>
+                                            <a href="{{ url_for('StreamView:view_log', sid=test.id) }}"
+                                               class="btn btn-info btn-xs"
+                                               role="button">
+                                                View log
+                                            </a>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="get_pipeline_stream('{{ test.id }}')">
+                                                GPL
+                                            </button>
+                                            <a href="{{ url_for('StreamView:view_pipeline', sid=test.id) }}"
+                                               class="btn btn-info btn-xs"
+                                               role="button">
+                                                VPL
+                                            </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <button class="btn btn-success btn-send col-md-12" onclick="add_test_life_stream()">
+                                    Add test life
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -1490,8 +1625,6 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
-
-
 
 </script>
 {% endblock %}
