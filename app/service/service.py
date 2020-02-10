@@ -1,3 +1,4 @@
+from datetime import datetime
 from bson.objectid import ObjectId
 
 from pyfastocloud_models.stream.entry import IStream, ProxyStream, EncodeStream, RelayStream, TimeshiftRecorderStream, \
@@ -408,5 +409,6 @@ class Service(IStreamHandler):
     def __refresh_catchups(self):
         for stream in self._streams:
             if stream.get_type() == constants.StreamType.CATCHUP:
-                self._client.start_stream(stream.config())
-                return
+                now = datetime.now()
+                if stream.start > now and now < stream.stop and not stream.is_started():
+                    self._client.start_stream(stream.config())
