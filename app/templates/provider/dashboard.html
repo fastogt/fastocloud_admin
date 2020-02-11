@@ -787,6 +787,33 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                         </td>
                                         <td>{{ catchup.price }}</td>
                                         <td>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="start_stream(this, '{{ catchup.id }}')">
+                                                Start
+                                            </button>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="stop_stream(this, '{{ catchup.id }}')">
+                                                Stop
+                                            </button>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="restart_stream(this, '{{ catchup.id }}')">
+                                                Restart
+                                            </button>
                                             <a href="{{ url_for('StreamView:play', sid=catchup.id) }}"
                                                class="btn btn-info btn-xs"
                                                role="button">
