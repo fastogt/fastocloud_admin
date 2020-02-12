@@ -112,7 +112,7 @@ class Service(IStreamHandler):
         if prepare:
             self._client.prepare_service(settings)
         res = self._client.sync_service(settings)
-        self.__refresh_catchups()
+        # self.__refresh_catchups()
         return res
 
     def get_log_stream(self, sid: str):
