@@ -13,9 +13,15 @@ from pyfastocloud_models.utils.utils import is_valid_http_url
 class M3uParseView(FlaskView):
     route_base = '/m3uparse/'
 
+    @login_required
     def show(self):
         m3u = M3uParse.objects()
         return render_template('autofill/show.html', m3u=m3u)
+
+    @login_required
+    def show_anonim(self):
+        m3u = M3uParse.objects()
+        return render_template('autofill/show_anonim.html', m3u=m3u)
 
     @route('/search/<sid>', methods=['GET'])
     def search(self, sid):
