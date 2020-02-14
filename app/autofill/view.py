@@ -13,13 +13,11 @@ from pyfastocloud_models.utils.utils import is_valid_http_url
 class M3uParseView(FlaskView):
     route_base = '/m3uparse/'
 
-    @login_required
     def show(self):
         m3u = M3uParse.objects()
         return render_template('autofill/show.html', m3u=m3u)
 
     @route('/search/<sid>', methods=['GET'])
-    @login_required
     def search(self, sid):
         lines = M3uParse.objects(id=sid)
         line = lines.first()
@@ -50,15 +48,15 @@ class M3uParseView(FlaskView):
                         line = M3uParse(name=title)
 
                     tvg_id = file['tvg-id']
-                    if len(tvg_id) < constants.MAX_STREAM_TVG_ID_LENGTH:
+                    if len(tvg_id) and len(tvg_id) < constants.MAX_STREAM_TVG_ID_LENGTH:
                         line.tvg_id.append(tvg_id)
 
                     tvg_group = file['tvg-group']
-                    if len(tvg_group) < constants.MAX_STREAM_GROUP_TITLE_LENGTH:
+                    if len(tvg_group) and len(tvg_group) < constants.MAX_STREAM_GROUP_TITLE_LENGTH:
                         line.group.append(tvg_group)
 
                     tvg_logo = file['tvg-logo']
-                    if len(tvg_logo) < constants.MAX_URL_LENGTH:
+                    if len(tvg_logo) and len(tvg_logo) < constants.MAX_URL_LENGTH:
                         if is_valid_http_url(tvg_logo, timeout=0.1):
                             line.tvg_logo.append(tvg_logo)
 

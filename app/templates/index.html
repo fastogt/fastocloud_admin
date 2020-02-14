@@ -13,11 +13,14 @@
 <main>
     <div class="container">
         <div class="jumbotron text-center">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <a href={{ url_for('HomeView:signin') }} class="btn btn-warning">Sign In</a>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <a href={{ url_for('HomeView:signup') }} class="btn btn-warning">Sign Up</a>
+            </div>
+            <div class="col-md-4">
+                <a href={{ url_for('M3uParseView:show') }} class="btn btn-success">Meta</a>
             </div>
         </div>
         <div>
