@@ -87,6 +87,12 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                     </div>
                     {% endif %}
                     <div class="col-md-1">
+                        <a href="{{ url_for('M3uParseView:show') }}" class="btn btn-warning"
+                           role="button">
+                            Meta
+                        </a>
+                    </div>
+                    <div class="col-md-1">
                         <a href="{{ url_for('ProviderView:logout') }}" class="btn btn-warning" role="button">
                             Logout
                         </a>
