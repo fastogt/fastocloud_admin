@@ -86,6 +86,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                         </a>
                     </div>
                     {% endif %}
+                    {% if (config['META_SUPPORT']) %}
                     <div class="col-md-1">
                         <a href="{{ url_for('M3uParseStreamsView:show') }}" class="btn btn-success"
                            role="button">
@@ -98,6 +99,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                             Meta VODs
                         </a>
                     </div>
+                    {% endif %}
                     <div class="col-md-1">
                         <a href="{{ url_for('ProviderView:logout') }}" class="btn btn-warning" role="button">
                             Logout

@@ -19,12 +19,14 @@
             <div class="col-md-3">
                 <a href={{ url_for('HomeView:signup') }} class="btn btn-warning">Sign Up</a>
             </div>
+            {% if (config['META_SUPPORT']) %}
             <div class="col-md-3">
                 <a href={{ url_for('M3uParseStreamsView:show_anonim') }} class="btn btn-success">Meta Streams</a>
             </div>
             <div class="col-md-3">
                 <a href={{ url_for('M3uParseVodsView:show_anonim') }} class="btn btn-success">Meta VODs</a>
             </div>
+            {% endif %}
         </div>
         <div>
             <h1>IPTV/Video cloud admin panel for <a href="https://github.com/fastogt/iptv">server</a></h1>
