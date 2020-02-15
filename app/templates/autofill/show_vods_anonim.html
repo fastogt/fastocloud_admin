@@ -1,0 +1,70 @@
+{% extends 'layouts/layout_user.html' %}
+{% from 'bootstrap/wtf.html' import form_field %}
+
+{% block title %}
+M3U | {{ config['PUBLIC_CONFIG'].site.title }}
+{% endblock %}
+{% block styles %}
+<style>
+        table {
+            table-layout: fixed;
+        }
+        th.number {
+            width: 2%;
+        }
+        th.name {
+            width: 88%;
+        }
+        th.actions {
+            width: 10%;
+        }
+</style>
+{{super()}}
+{% endblock %}
+{% block content %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h1 class="panel-title">
+            <div class="col-md-11">
+                <a href="{{ url_for('HomeView:index') }}">{{ config['PUBLIC_CONFIG'].site.title }}</a>
+            </div>
+            <div>Version: {{ config['PUBLIC_CONFIG'].project.version }}</div>
+        </h1>
+    </div>
+    <div class="panel-body">
+        <div class="container-fluid">
+            <div class="row well">
+                <div class="row">
+                    <table id='m3u_table' class="table">
+                        <thead>
+                        <tr>
+                            <th class="number">#</th>
+                            <th class="name">Name</th>
+                            <th class="actions">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for line in m3u %}
+                        <tr id='{{ line.id }}'>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ line.name }}</td>
+                            <td>
+                                <a href="{{ url_for('M3uParseVodsView:search', sid=line.id) }}" role="button"
+                                   target="_blank" class="btn btn-success btn-xs">
+                                    Show
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}
