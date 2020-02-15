@@ -85,7 +85,6 @@ class M3uParseVodsView(FlaskView):
         m3u = M3uParseVods.objects()
         return render_template('autofill/show_vods.html', m3u=m3u)
 
-    @login_required
     def show_anonim(self):
         m3u = M3uParseVods.objects()
         return render_template('autofill/show_vods_anonim.html', m3u=m3u)
