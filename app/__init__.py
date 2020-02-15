@@ -96,7 +96,7 @@ from app.provider.view import ProviderView
 from app.stream.view import StreamView
 from app.service.view import ServiceView
 from app.subscriber.view import SubscriberView
-from app.autofill.view import M3uParseView
+from app.autofill.view import M3uParseStreamsView
 from app.epg.view import EpgView
 
 HomeView.register(app)
@@ -104,5 +104,5 @@ ProviderView.register(app)
 StreamView.register(app)
 ServiceView.register(app)
 SubscriberView.register(app)
-M3uParseView.register(app)
+M3uParseStreamsView.register(app)
 EpgView.register(app)

@@ -70,7 +70,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                     <div class="col-md-1">
                         <img width="64px" height="64px" src="{{ url_for('static', filename='images/logo.png') }}"/>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <p>Welcome {{ current_user.email }}</p>
                     </div>
                     <div class="col-md-1">
@@ -87,9 +87,15 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                     </div>
                     {% endif %}
                     <div class="col-md-1">
-                        <a href="{{ url_for('M3uParseView:show') }}" class="btn btn-success"
+                        <a href="{{ url_for('M3uParseStreamsView:show') }}" class="btn btn-success"
                            role="button">
-                            Meta
+                            Meta Streams
+                        </a>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="{{ url_for('M3uParseStreamsView:show') }}" class="btn btn-success"
+                           role="button">
+                            Meta VODs
                         </a>
                     </div>
                     <div class="col-md-1">

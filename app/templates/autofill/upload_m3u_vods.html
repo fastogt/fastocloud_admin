@@ -20,7 +20,7 @@ Upload m3u | {{ config['PUBLIC_CONFIG'].site.title }}
                 <h3>Upload m3u files</h3>
                 <p>Note: Please upload m3u files for service.</p>
                 {{ util.flashed_messages(dismissible=True, container=False) }}
-                <form action="{{ url_for('M3uParseView:upload_files') }}" method="POST" class="form" role="form"
+                <form action="{{ url_for('M3uParseVodsView:upload_files') }}" method="POST" class="form" role="form"
                       enctype="multipart/form-data">
                     {{ form.hidden_tag() }}
                     <div class="col-md-3">
