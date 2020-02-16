@@ -11,8 +11,8 @@ if __name__ == '__main__':
             name = p['name']
             icon = p['icon']
             group = p['group']
-            sid = p['input']['urls'][0]['id']
-            input = p['input']['urls'][0]['uri']
+            sid = p['input'][0]['id']
+            input = p['input'][0]['uri']
             f.write('#EXTINF:{0} tvg-id="{1}" tvg-name="" tvg-logo="{3}" group-title="{4}",{2}\n{5}\n'.format(
                 idx,
                 sid,

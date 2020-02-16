@@ -2,7 +2,8 @@
 import argparse
 import os
 import sys
-from mongoengine import connect
+from pymodm import connect
+from bson.objectid import ObjectId
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -11,6 +12,16 @@ from pyfastocloud_models.service.entry import ServiceSettings
 from pyfastocloud_models.utils.m3u_parser import M3uParser
 
 PROJECT_NAME = 'test_life'
+
+
+def _get_server_by_id(sid: str):
+    try:
+        server = ServiceSettings.objects.get({'_id': ObjectId(sid)})
+    except ServiceSettings.DoesNotExist:
+        return None
+    else:
+        return server
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog=PROJECT_NAME, usage='%(prog)s [options]')
@@ -21,7 +32,7 @@ if __name__ == '__main__':
 
     mongo = connect(argv.mongo_uri)
     if mongo:
-        service_settings = ServiceSettings.objects().first()
+        service_settings = ServiceSettings.objects.get({})
         m3u_parser = M3uParser()
         m3u_parser.read_m3u(argv.uri)
         m3u_parser.parse()

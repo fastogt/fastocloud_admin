@@ -2,7 +2,7 @@
 import argparse
 import os
 import sys
-from mongoengine import connect
+from pymodm import connect
 import mysql.connector
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     mysql_port = argv.mysql_port
     server_id = argv.server_id
 
-    mongo = connect(host=argv.mongo_uri)
+    mongo = connect(uri=argv.mongo_uri)
     if not mongo:
         sys.exit(1)
 

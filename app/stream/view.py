@@ -2,6 +2,7 @@ import os
 import datetime
 import re
 
+from bson.objectid import ObjectId
 from flask_classy import FlaskView, route
 from flask import render_template, request, jsonify, Response
 from flask_login import login_required, current_user
@@ -13,6 +14,15 @@ from app.common.stream.forms import ProxyStreamForm, EncodeStreamForm, RelayStre
     CatchupStreamForm, TimeshiftPlayerStreamForm, TestLifeStreamForm, VodEncodeStreamForm, VodRelayStreamForm, \
     ProxyVodStreamForm, CodEncodeStreamForm, CodRelayStreamForm, EventStreamForm
 from app.common.series.forms import SerialForm
+
+
+def _get_stream_by_id(sid: str):
+    try:
+        server = IStream.objects.get({'_id': ObjectId(sid)})
+    except IStream.DoesNotExist:
+        return None
+    else:
+        return server
 
 
 # routes
@@ -64,7 +74,7 @@ class StreamView(FlaskView):
     @login_required
     @route('/play/<sid>/master.m3u', methods=['GET'])
     def play(self, sid):
-        stream = IStream.objects(id=sid).first()
+        stream = _get_stream_by_id(sid)
         if stream:
             return Response(stream.generate_playlist(), mimetype='application/x-mpequrl'), 200
 

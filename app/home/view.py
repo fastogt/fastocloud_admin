@@ -10,6 +10,24 @@ from app import app, mail, login_manager
 from app.home.entry import ProviderAdminUser
 from app.home.forms import ContactForm
 from app.common.provider.forms import SignupForm, SigninForm
+from bson.objectid import ObjectId
+
+def _get_provider_by_email(email: str):
+    try:
+        provider = ProviderAdminUser.objects.get({'email': email})
+    except ProviderAdminUser.DoesNotExist:
+        return None
+    else:
+        return provider
+
+
+def _get_provider_by_id(id: str):
+    try:
+        provider = ProviderAdminUser.objects.get({'_id': ObjectId(id)})
+    except ProviderAdminUser.DoesNotExist:
+        return None
+    else:
+        return provider
 
 
 def flash_success(text: str):
@@ -33,7 +51,7 @@ def post_login(form: SigninForm):
         return render_template('home/login.html', form=form)
 
     email = form.email.data.lower()
-    check_user = ProviderAdminUser.objects(email=email).first()
+    check_user = _get_provider_by_email(email)
     if not check_user:
         flash_error('User not found.')
         return render_template('home/login.html', form=form)
@@ -42,7 +60,7 @@ def post_login(form: SigninForm):
         flash_error('User not active.')
         return render_template('home/login.html', form=form)
 
-    if not ProviderAdminUser.check_password_hash(check_user['password'], form.password.data):
+    if not ProviderAdminUser.check_password_hash(check_user.password, form.password.data):
         flash_error('Invalid password.')
         return render_template('home/login.html', form=form)
 
@@ -95,7 +113,7 @@ class HomeView(FlaskView):
         try:
             email = self._confirm_link_generator.loads(token, salt=HomeView.SALT_LINK,
                                                        max_age=HomeView.CONFIRM_LINK_TTL)
-            confirm_user = ProviderAdminUser.objects(email=email).first()
+            confirm_user = _get_provider_by_email(email)
             if confirm_user:
                 confirm_user.status = ProviderAdminUser.Status.ACTIVE
                 confirm_user.save()
@@ -140,7 +158,7 @@ class HomeView(FlaskView):
                 flash_error('Invalid email.')
                 return render_template('home/register.html', form=form)
 
-            existing_user = ProviderAdminUser.objects(email=email).first()
+            existing_user = _get_provider_by_email(email)
             if existing_user:
                 return redirect(url_for('HomeView:signin'))
 
@@ -165,7 +183,7 @@ class HomeView(FlaskView):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return ProviderAdminUser.objects(pk=user_id).first()
+    return _get_provider_by_id(user_id)
 
 
 def page_not_found(e):

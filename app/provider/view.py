@@ -65,7 +65,7 @@ class ProviderView(FlaskView):
 
     @login_required
     def remove(self):
-        servers = ServiceSettings.objects()
+        servers = ServiceSettings.objects.all()
         for server in servers:
             server.remove_provider(current_user)
 

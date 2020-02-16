@@ -2,7 +2,7 @@
 import argparse
 import os
 import sys
-from mongoengine import connect
+from pymodm import connect
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     email = argv.email
     password = argv.password
 
-    mongo = connect(host=argv.mongo_uri)
+    mongo = connect(mongodb_uri=argv.mongo_uri)
     if not mongo:
         sys.exit(1)
 
