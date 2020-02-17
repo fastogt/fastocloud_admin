@@ -2,7 +2,7 @@
 import argparse
 import os
 import sys
-from mongoengine import connect
+from pymodm import connect
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -16,9 +16,9 @@ if __name__ == '__main__':
 
     argv = parser.parse_args()
 
-    mongo = connect(host=argv.mongo_uri)
+    mongo = connect(argv.mongo_uri)
     if mongo:
-        streams = IStream.objects()
+        streams = IStream.objects.all()
         f = open("out.m3u", "w")
         f.write('#EXTM3U\n')
         idx = 0

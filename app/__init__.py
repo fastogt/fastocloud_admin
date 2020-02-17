@@ -3,7 +3,7 @@ import os
 from omdb import OMDBClient
 
 from flask import Flask
-from flask_mongoengine import MongoEngine
+from flask_pymodm import PyModm
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_bootstrap import Bootstrap
@@ -48,7 +48,7 @@ def init_project(static_folder, *args):
 
     app.wsgi_app = ProxyFix(app.wsgi_app)
     bootstrap = Bootstrap(app)
-    db = MongoEngine(app)
+    db = PyModm(app)
     mail = Mail(app)
     socketio = SocketIO(app)
     login_manager = LoginManager(app)

@@ -23,13 +23,13 @@ class EpgView(FlaskView):
 
     @login_required
     def show(self):
-        epgs = Epg.objects()
+        epgs = Epg.objects.all()
         return render_template('epg/show.html', epgs=epgs)
 
     @route('/update_urls', methods=['GET'])
     @login_required
     def update_urls(self):
-        epgs = Epg.objects()
+        epgs = Epg.objects.all()
         epg_service_in_directory = app.config.get('EPG_IN_DIRECTORY')
 
         result = []

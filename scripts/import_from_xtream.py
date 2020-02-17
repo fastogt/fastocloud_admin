@@ -2,7 +2,7 @@
 import argparse
 import os
 import sys
-from mongoengine import connect
+from pymodm import connect
 import mysql.connector
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))

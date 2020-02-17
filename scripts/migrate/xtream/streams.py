@@ -18,7 +18,7 @@ def import_streams_to_server(db, server: ServiceSettings):
         if not len(urls):
             continue
 
-        stream.output.urls[0].uri = urls[0]
+        stream.output[0].uri = urls[0]
         stream.name = sql_entry['stream_display_name']
         tvg_logo = sql_entry['stream_icon']
         if len(tvg_logo) < constants.MAX_URL_LENGTH:

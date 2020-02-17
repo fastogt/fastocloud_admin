@@ -2,7 +2,7 @@
 import argparse
 import os
 import sys
-from mongoengine import connect
+from pymodm import connect
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -22,10 +22,7 @@ if __name__ == '__main__':
     email = argv.email
     password = argv.password
 
-    mongo = connect(host=argv.mongo_uri)
-    if not mongo:
-        sys.exit(1)
-
+    connect(mongodb_uri=argv.mongo_uri)
     new_user = ProviderAdminUser.make_provider(email=email.lower(), password=password, country=argv.country,
                                                language=argv.language)
     new_user.status = ProviderAdminUser.Status.ACTIVE
