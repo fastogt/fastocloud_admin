@@ -22,7 +22,7 @@ if __name__ == '__main__':
     email = argv.email
     password = argv.password
 
-    connect(mongodb_uri=argv.mongo_uri)
+    connect(mongodb_uri=argv.mongo_uri, alias='default')
     new_user = ProviderAdminUser.make_provider(email=email.lower(), password=password, country=argv.country,
                                                language=argv.language)
     new_user.status = ProviderAdminUser.Status.ACTIVE
