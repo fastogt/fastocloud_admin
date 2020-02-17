@@ -22,11 +22,7 @@ if __name__ == '__main__':
     email = argv.email
     password = argv.password
 
-    mongo = connect(mongodb_uri=argv.mongo_uri)
-    if not mongo:
-        print('Failed to connect!')
-        sys.exit(1)
-
+    connect(mongodb_uri=argv.mongo_uri)
     new_user = ProviderAdminUser.make_provider(email=email.lower(), password=password, country=argv.country,
                                                language=argv.language)
     new_user.status = ProviderAdminUser.Status.ACTIVE
