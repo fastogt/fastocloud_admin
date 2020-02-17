@@ -12,6 +12,7 @@ from app.home.forms import ContactForm
 from app.common.provider.forms import SignupForm, SigninForm
 from bson.objectid import ObjectId
 
+
 def _get_provider_by_email(email: str):
     try:
         provider = ProviderAdminUser.objects.get({'email': email})
