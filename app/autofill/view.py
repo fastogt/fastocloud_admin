@@ -15,11 +15,11 @@ class M3uParseStreamsView(FlaskView):
 
     @login_required
     def show(self):
-        m3u = M3uParseStreams.objects()
+        m3u = M3uParseStreams.objects.all()
         return render_template('autofill/show_streams.html', m3u=m3u)
 
     def show_anonim(self):
-        m3u = M3uParseStreams.objects()
+        m3u = M3uParseStreams.objects.all()
         return render_template('autofill/show_streams_anonim.html', m3u=m3u)
 
     @route('/search/<sid>', methods=['GET'])
@@ -82,11 +82,11 @@ class M3uParseVodsView(FlaskView):
 
     @login_required
     def show(self):
-        m3u = M3uParseVods.objects()
+        m3u = M3uParseVods.objects.all()
         return render_template('autofill/show_vods.html', m3u=m3u)
 
     def show_anonim(self):
-        m3u = M3uParseVods.objects()
+        m3u = M3uParseVods.objects.all()
         return render_template('autofill/show_vods_anonim.html', m3u=m3u)
 
     @route('/search/<sid>', methods=['GET'])

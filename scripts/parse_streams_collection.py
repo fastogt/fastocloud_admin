@@ -16,9 +16,9 @@ if __name__ == '__main__':
 
     argv = parser.parse_args()
 
-    mongo = connect(uri=argv.mongo_uri)
+    mongo = connect(argv.mongo_uri)
     if mongo:
-        streams = IStream.objects()
+        streams = IStream.objects.all()
         f = open("out.m3u", "w")
         f.write('#EXTM3U\n')
         idx = 0

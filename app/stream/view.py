@@ -18,11 +18,11 @@ from app.common.series.forms import SerialForm
 
 def _get_stream_by_id(sid: str):
     try:
-        server = IStream.objects.get({'_id': ObjectId(sid)})
+        stream = IStream.objects.get({'_id': ObjectId(sid)})
     except IStream.DoesNotExist:
         return None
     else:
-        return server
+        return stream
 
 
 # routes
