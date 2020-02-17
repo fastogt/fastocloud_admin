@@ -1,4 +1,5 @@
 flask>=1.0.0
+flask_wtf>=0.14
 flask_socketio>=1.0
 flask_pymodm>=0.1.2
 flask_login>=0.3.0

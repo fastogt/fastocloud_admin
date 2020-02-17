@@ -38,7 +38,7 @@ if __name__ == '__main__':
         m3u_parser.parse()
         for file in m3u_parser.files:
             stream = TestLifeStream.make_stream(service_settings)
-            stream.input.urls[0].uri = file['link']
+            stream.input[0].uri = file['link']
             stream.name = '{0}({1})'.format(file['tvg-group'], file['title'])
             service_settings.streams.append(stream)
 
