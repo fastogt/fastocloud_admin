@@ -24,6 +24,7 @@ if __name__ == '__main__':
 
     mongo = connect(mongodb_uri=argv.mongo_uri)
     if not mongo:
+        print('Failed to connect!')
         sys.exit(1)
 
     new_user = ProviderAdminUser.make_provider(email=email.lower(), password=password, country=argv.country,
