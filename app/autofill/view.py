@@ -1,12 +1,49 @@
 from flask_classy import FlaskView, route
 from flask import request, jsonify, render_template, redirect, url_for
 from flask_login import login_required
+from bson.objectid import ObjectId
 
 from pyfastocloud_models.utils.m3u_parser import M3uParser
 from app.common.service.forms import UploadM3uForm
 import pyfastocloud_models.constants as constants
 from app.autofill.entry import M3uParseStreams, M3uParseVods
 from pyfastocloud_models.utils.utils import is_valid_http_url
+
+
+def _get_m3u_stream_by_id(sid: str):
+    try:
+        m3u = M3uParseStreams.objects.get({'_id': ObjectId(sid)})
+    except M3uParseStreams.DoesNotExist:
+        return None
+    else:
+        return m3u
+
+
+def _get_m3u_stream_by_name(name: str):
+    try:
+        m3u = M3uParseStreams.objects.get({'name': name})
+    except M3uParseStreams.DoesNotExist:
+        return None
+    else:
+        return m3u
+
+
+def _get_m3u_vod_by_id(sid: str):
+    try:
+        m3u = M3uParseVods.objects.get({'_id': ObjectId(sid)})
+    except M3uParseVods.DoesNotExist:
+        return None
+    else:
+        return m3u
+
+
+def _get_m3u_vod_by_name(name: str):
+    try:
+        m3u = M3uParseVods.objects.get({'name': name})
+    except M3uParseVods.DoesNotExist:
+        return None
+    else:
+        return m3u
 
 
 # routes
@@ -24,7 +61,7 @@ class M3uParseStreamsView(FlaskView):
 
     @route('/search/<sid>', methods=['GET'])
     def search(self, sid):
-        lines = M3uParseStreams.objects(id=sid)
+        lines = _get_m3u_stream_by_id(sid)
         line = lines.first()
         if line:
             return jsonify(status='ok', line=line), 200
@@ -48,7 +85,7 @@ class M3uParseStreamsView(FlaskView):
                     if len(title) > constants.MAX_STREAM_NAME_LENGTH:
                         continue
 
-                    line = M3uParseStreams.objects(name=title).first()
+                    line = _get_m3u_stream_by_name(name=title)
                     if not line:
                         line = M3uParseStreams(name=title)
 
@@ -91,7 +128,7 @@ class M3uParseVodsView(FlaskView):
 
     @route('/search/<sid>', methods=['GET'])
     def search(self, sid):
-        lines = M3uParseVods.objects(id=sid)
+        lines = _get_m3u_vod_by_id(sid)
         line = lines.first()
         if line:
             return jsonify(status='ok', line=line), 200
@@ -115,7 +152,7 @@ class M3uParseVodsView(FlaskView):
                     if len(title) > constants.MAX_STREAM_NAME_LENGTH:
                         continue
 
-                    line = M3uParseVods.objects(name=title).first()
+                    line = _get_m3u_vod_by_name(title)
                     if not line:
                         line = M3uParseVods(name=title)
 
