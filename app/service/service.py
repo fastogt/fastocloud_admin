@@ -252,17 +252,15 @@ class Service(IStreamHandler):
         stream.save()
 
     def remove_stream(self, sid: str):
-        for stream in self._streams:
+        for stream in list(self._streams):
             if stream.id == ObjectId(sid):
                 self._client.stop_stream(sid)
                 self._streams.remove(stream)
-                safe_delete_stream(stream)
                 self._settings.remove_stream(stream)  #
 
     def remove_all_streams(self):
         for stream in self._streams:
             self._client.stop_stream(stream.get_id())
-            safe_delete_stream(stream)
         self._streams = []
         self._settings.remove_all_streams()  #
 
