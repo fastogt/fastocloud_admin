@@ -61,10 +61,9 @@ class M3uParseStreamsView(FlaskView):
 
     @route('/search/<sid>', methods=['GET'])
     def search(self, sid):
-        lines = _get_m3u_stream_by_id(sid)
-        line = lines.first()
+        line = _get_m3u_stream_by_id(sid)
         if line:
-            return jsonify(status='ok', line=line), 200
+            return jsonify(status='ok', line=line.to_dict()), 200
 
         return jsonify(status='failed', error='Not found'), 404
 
@@ -128,10 +127,9 @@ class M3uParseVodsView(FlaskView):
 
     @route('/search/<sid>', methods=['GET'])
     def search(self, sid):
-        lines = _get_m3u_vod_by_id(sid)
-        line = lines.first()
+        line = _get_m3u_vod_by_id(sid)
         if line:
-            return jsonify(status='ok', line=line), 200
+            return jsonify(status='ok', line=line.to_dict()), 200
 
         return jsonify(status='failed', error='Not found'), 404
 
