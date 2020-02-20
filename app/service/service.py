@@ -399,8 +399,7 @@ class Service(IStreamHandler):
 
     def __reload_from_db(self):
         self._streams = []
-        streams = self._settings.streams
-        for stream in streams:
+        for stream in self._settings.streams:
             self.__init_stream_runtime_fields(stream)
             self._streams.append(stream)
 
