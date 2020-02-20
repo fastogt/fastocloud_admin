@@ -212,10 +212,10 @@ class Service(IStreamHandler):
         return self._online_users
 
     def get_streams(self):
-        return self._streams
+        return self._settings.streams
 
     def find_stream_by_id(self, sid: str):
-        for stream in self._streams:
+        for stream in self._settings.streams:
             if stream.id == ObjectId(sid):
                 return stream
 
@@ -239,37 +239,33 @@ class Service(IStreamHandler):
 
     def add_stream(self, stream: IStream):
         self.__init_stream_runtime_fields(stream)
-        self._streams.append(stream)
         self._settings.add_stream(stream)  #
 
     def add_streams(self, streams: [IStream]):
         for stream in streams:
             self.__init_stream_runtime_fields(stream)
-            self._streams.append(stream)
         self._settings.add_streams(streams)  #
 
     def update_stream(self, stream):
         stream.save()
 
     def remove_stream(self, sid: str):
-        for stream in list(self._streams):
+        for stream in list(self._settings.streams):
             if stream.id == ObjectId(sid):
                 self._client.stop_stream(sid)
-                self._streams.remove(stream)
                 self._settings.remove_stream(stream)  #
 
     def remove_all_streams(self):
-        for stream in self._streams:
+        for stream in self._settings.streams:
             self._client.stop_stream(stream.get_id())
-        self._streams = []
         self._settings.remove_all_streams()  #
 
     def stop_all_streams(self):
-        for stream in self._streams:
+        for stream in self._settings.streams:
             self._client.stop_stream(stream.get_id())
 
     def start_all_streams(self):
-        for stream in self._streams:
+        for stream in self._settings.streams:
             self._client.start_stream(stream.config())
 
     def to_dict(self) -> dict:
@@ -355,7 +351,7 @@ class Service(IStreamHandler):
             self.sync(True)
         else:
             self.__reset()
-            for stream in self._streams:
+            for stream in self._settings.streams:
                 stream.reset()
 
     def on_ping_received(self, params: dict):
@@ -398,13 +394,11 @@ class Service(IStreamHandler):
         stream.set_server_settings(self._settings)
 
     def __reload_from_db(self):
-        self._streams = []
         for stream in self._settings.streams:
             self.__init_stream_runtime_fields(stream)
-            self._streams.append(stream)
 
     def __refresh_catchups(self):
-        for stream in self._streams:
+        for stream in self._settings.streams:
             if stream.get_type() == constants.StreamType.CATCHUP:
                 now = datetime.now()
                 if stream.start > now and now < stream.stop and not stream.is_started():
