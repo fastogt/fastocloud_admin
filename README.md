@@ -4,13 +4,13 @@
 
 About FastoCloud Panel Media Part
 ===============
-Panel for ![FastoCloud](https://github.com/fastogt/fastocloud) Media part
+Panel for [FastoCloud](https://github.com/fastogt/fastocloud) Media part
 
 ### Backend:
-![Sources](https://gitlab.com/fastogt/fastocloud/backend)
+[Sources](https://gitlab.com/fastogt/fastocloud/backend)
 
 ### Frontend:
-![Sources](https://gitlab.com/fastogt/fastocloud/frontend)
+[Sources](https://gitlab.com/fastogt/fastocloud/frontend)
 
 ### Note:
 How to build please read wiki pages.
