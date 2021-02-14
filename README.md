@@ -12,5 +12,8 @@ Panel for ![FastoCloud](https://github.com/fastogt/fastocloud) Media part
 ### Frontend:
 ![Sources](https://gitlab.com/fastogt/fastocloud/frontend)
 
+### Note:
+How to build please read wiki pages.
+
 ### Test server
 [FastoCloud](https://fastocloud.com)
